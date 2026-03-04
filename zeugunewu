@@ -1,9 +1,10 @@
 --[[
     ╔═══════════════════════════════════════════════╗
-    ║         ZENITH UI LIBRARY v3.0                ║
-    ║     Complete Redesign - Premium Edition       ║
-    ║   Glass Morphism • Neon Glow • Gradient UI    ║
-    ║         Anti-AFK Always On                    ║
+    ║  ▀▀█ █▀▀ █▀█ █ ▀█▀ █ █   ▀█▀ █▀▀ █▀█ █▄█  ║
+    ║  █▄█ ██▄ █ █ █  █  █▀█    █  ██▄ █▀▄ █ █  ║
+    ║  ZENITH://TERMINAL_v3.0 [RETRO_EDITION]      ║
+    ║  CRT • Scanlines • Neon Glow • Monospace     ║
+    ║  Anti-AFK Protocol: ALWAYS_ACTIVE             ║
     ╚═══════════════════════════════════════════════╝
 ]]
 
@@ -11,19 +12,19 @@ local ZenithLib = {}
 ZenithLib.__index = ZenithLib
 
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
+local TS = game:GetService("TweenService")
 local UIS = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
+local RS = game:GetService("RunService")
 local VIM = game:GetService("VirtualInputManager")
 local CoreGui = game:GetService("CoreGui")
-local HttpService = game:GetService("HttpService")
+local Http = game:GetService("HttpService")
 local Lighting = game:GetService("Lighting")
 
 local Plr = Players.LocalPlayer
 local Mouse = Plr:GetMouse()
 
 -- ══════════════════════════════════════
--- ANTI-AFK (3 METHODS - ALWAYS ON)
+-- ANTI-AFK PROTOCOL [3 METHODS]
 -- ══════════════════════════════════════
 local _afk = true
 pcall(function()
@@ -36,247 +37,183 @@ pcall(function()
         end
     end)
 end)
-pcall(function()
-    task.spawn(function()
-        while task.wait(55) do
-            if _afk then
-                pcall(function()
-                    VIM:SendKeyEvent(true,Enum.KeyCode.W,false,game)
-                    task.wait(0.1)
-                    VIM:SendKeyEvent(false,Enum.KeyCode.W,false,game)
-                end)
-            end
-        end
-    end)
-end)
-pcall(function()
-    task.spawn(function()
-        while task.wait(240) do
-            if _afk and Plr.Character then
-                local h = Plr.Character:FindFirstChildOfClass("Humanoid")
-                if h then h.Jump = true end
-            end
-        end
-    end)
-end)
+pcall(function() task.spawn(function() while task.wait(55) do if _afk then pcall(function() VIM:SendKeyEvent(true,Enum.KeyCode.W,false,game) task.wait(0.1) VIM:SendKeyEvent(false,Enum.KeyCode.W,false,game) end) end end end) end)
+pcall(function() task.spawn(function() while task.wait(240) do if _afk and Plr.Character then pcall(function() Plr.Character:FindFirstChildOfClass("Humanoid").Jump = true end) end end end) end)
 
 -- ══════════════════════════════════════
--- HELPERS
+-- CORE UTILS
 -- ══════════════════════════════════════
-local isMobile = UIS.TouchEnabled and not UIS.KeyboardEnabled
+local mob = UIS.TouchEnabled and not UIS.KeyboardEnabled
 
-local function tw(obj, props, dur, style, dir)
-    local t = TweenService:Create(obj, TweenInfo.new(dur or 0.3, style or Enum.EasingStyle.Quint, dir or Enum.EasingDirection.Out), props)
-    t:Play()
-    return t
+local function tw(o,p,d,s,dr)
+    local t = TS:Create(o,TweenInfo.new(d or 0.25,s or Enum.EasingStyle.Quad,dr or Enum.EasingDirection.Out),p)
+    t:Play() return t
 end
 
-local function addStroke(parent, color, thickness, transparency)
-    local s = Instance.new("UIStroke")
-    s.Color = color or Color3.fromRGB(255,255,255)
-    s.Thickness = thickness or 1
-    s.Transparency = transparency or 0.85
-    s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    s.Parent = parent
-    return s
+local function c(p,r)
+    local u = Instance.new("UICorner"); u.CornerRadius = UDim.new(0,r or 3); u.Parent = p; return u
 end
 
-local function addCorner(parent, radius)
-    local c = Instance.new("UICorner")
-    c.CornerRadius = UDim.new(0, radius or 10)
-    c.Parent = parent
-    return c
+local function s(p,col,th,tr)
+    local u = Instance.new("UIStroke"); u.Color = col or Color3.new(1,1,1); u.Thickness = th or 1; u.Transparency = tr or 0.6
+    u.ApplyStrokeMode = Enum.ApplyStrokeMode.Border; u.Parent = p; return u
 end
 
-local function addPadding(parent, t, b, l, r)
-    local p = Instance.new("UIPadding")
-    p.PaddingTop = UDim.new(0, t or 0)
-    p.PaddingBottom = UDim.new(0, b or 0)
-    p.PaddingLeft = UDim.new(0, l or 0)
-    p.PaddingRight = UDim.new(0, r or 0)
-    p.Parent = parent
-    return p
+local function pad(p,t,b,l,r)
+    local u = Instance.new("UIPadding"); u.PaddingTop=UDim.new(0,t or 0); u.PaddingBottom=UDim.new(0,b or 0)
+    u.PaddingLeft=UDim.new(0,l or 0); u.PaddingRight=UDim.new(0,r or 0); u.Parent = p; return u
 end
 
-local function addLayout(parent, dir, pad, align, sort)
-    local l = Instance.new("UIListLayout")
-    l.FillDirection = dir or Enum.FillDirection.Vertical
-    l.Padding = UDim.new(0, pad or 6)
-    l.HorizontalAlignment = align or Enum.HorizontalAlignment.Center
-    l.SortOrder = sort or Enum.SortOrder.LayoutOrder
-    l.Parent = parent
-    return l
+local function lay(p,dir,pd,al)
+    local u = Instance.new("UIListLayout"); u.FillDirection=dir or Enum.FillDirection.Vertical
+    u.Padding=UDim.new(0,pd or 5); u.HorizontalAlignment=al or Enum.HorizontalAlignment.Center
+    u.SortOrder=Enum.SortOrder.LayoutOrder; u.Parent = p; return u
 end
 
-local function addGradient(parent, c1, c2, rotation)
-    local g = Instance.new("UIGradient")
-    g.Color = ColorSequence.new(c1, c2)
-    g.Rotation = rotation or 90
-    g.Parent = parent
-    return g
+-- Neon glow on text
+local function glow(lbl, col, intensity)
+    lbl.TextStrokeColor3 = col
+    lbl.TextStrokeTransparency = intensity or 0.72
 end
 
-local function rippleEffect(parent, x, y)
-    local r = Instance.new("Frame")
-    r.BackgroundColor3 = Color3.new(1,1,1)
-    r.BackgroundTransparency = 0.75
-    r.BorderSizePixel = 0
-    r.AnchorPoint = Vector2.new(0.5,0.5)
-    r.ZIndex = parent.ZIndex + 5
-    addCorner(r, 999)
-    r.Position = UDim2.new(0, x - parent.AbsolutePosition.X, 0, y - parent.AbsolutePosition.Y)
-    r.Size = UDim2.new(0,0,0,0)
-    r.Parent = parent
-    local m = math.max(parent.AbsoluteSize.X, parent.AbsoluteSize.Y) * 3
-    tw(r, {Size = UDim2.new(0,m,0,m), BackgroundTransparency = 1}, 0.6).Completed:Connect(function() r:Destroy() end)
+-- Terminal prefix formatter
+local function termFmt(prefix, text)
+    return prefix .. " " .. text
 end
 
 -- ══════════════════════════════════════
--- THEMES (PREMIUM)
+-- RETRO THEMES (MONOCHROME CRT)
 -- ══════════════════════════════════════
 local Themes = {
-    Midnight = {
-        Bg = Color3.fromRGB(8,8,16),
-        Card = Color3.fromRGB(14,14,28),
-        CardHover = Color3.fromRGB(20,20,38),
-        Surface = Color3.fromRGB(18,18,35),
-        Elevated = Color3.fromRGB(24,24,45),
-        Accent1 = Color3.fromRGB(99,102,241),   -- Indigo
-        Accent2 = Color3.fromRGB(168,85,247),    -- Purple
-        AccentGlow = Color3.fromRGB(129,140,248),
-        Neon = Color3.fromRGB(139,92,246),
-        Text = Color3.fromRGB(248,250,252),
-        TextSub = Color3.fromRGB(148,163,184),
-        TextMuted = Color3.fromRGB(71,85,105),
-        Border = Color3.fromRGB(30,30,55),
-        Success = Color3.fromRGB(34,197,94),
-        Warning = Color3.fromRGB(250,204,21),
-        Error = Color3.fromRGB(239,68,68),
-        Info = Color3.fromRGB(56,189,248),
-        Toggle = Color3.fromRGB(30,30,55),
-        Slider = Color3.fromRGB(22,22,42),
-        Input = Color3.fromRGB(12,12,25),
+    Matrix = {
+        Bg = Color3.fromRGB(3,8,3),
+        Card = Color3.fromRGB(6,16,6),
+        CardLit = Color3.fromRGB(10,25,10),
+        Surface = Color3.fromRGB(5,12,5),
+        Accent = Color3.fromRGB(0,255,65),
+        AccentDim = Color3.fromRGB(0,140,35),
+        AccentGlow = Color3.fromRGB(0,255,65),
+        Dim = Color3.fromRGB(0,80,20),
+        Text = Color3.fromRGB(0,235,55),
+        TextBright = Color3.fromRGB(120,255,160),
+        TextDim = Color3.fromRGB(0,100,28),
+        TextDark = Color3.fromRGB(0,50,14),
+        Border = Color3.fromRGB(0,60,16),
+        Success = Color3.fromRGB(0,255,65),
+        Warning = Color3.fromRGB(200,255,0),
+        Error = Color3.fromRGB(255,60,40),
+        Info = Color3.fromRGB(0,200,120),
+        Scan = Color3.fromRGB(0,255,65),
     },
-    Obsidian = {
-        Bg = Color3.fromRGB(5,5,8),
-        Card = Color3.fromRGB(12,12,18),
-        CardHover = Color3.fromRGB(18,18,26),
-        Surface = Color3.fromRGB(15,15,22),
-        Elevated = Color3.fromRGB(22,22,32),
-        Accent1 = Color3.fromRGB(236,72,153),    -- Pink
-        Accent2 = Color3.fromRGB(244,114,182),
-        AccentGlow = Color3.fromRGB(251,146,60),
-        Neon = Color3.fromRGB(236,72,153),
-        Text = Color3.fromRGB(255,250,250),
-        TextSub = Color3.fromRGB(163,163,163),
-        TextMuted = Color3.fromRGB(82,82,82),
-        Border = Color3.fromRGB(28,28,38),
-        Success = Color3.fromRGB(52,211,153),
-        Warning = Color3.fromRGB(251,191,36),
-        Error = Color3.fromRGB(248,113,113),
-        Info = Color3.fromRGB(125,211,252),
-        Toggle = Color3.fromRGB(28,28,38),
-        Slider = Color3.fromRGB(18,18,26),
-        Input = Color3.fromRGB(8,8,14),
+    Amber = {
+        Bg = Color3.fromRGB(8,5,0),
+        Card = Color3.fromRGB(16,10,2),
+        CardLit = Color3.fromRGB(25,16,4),
+        Surface = Color3.fromRGB(12,8,1),
+        Accent = Color3.fromRGB(255,176,0),
+        AccentDim = Color3.fromRGB(160,100,0),
+        AccentGlow = Color3.fromRGB(255,200,50),
+        Dim = Color3.fromRGB(90,55,0),
+        Text = Color3.fromRGB(255,176,0),
+        TextBright = Color3.fromRGB(255,220,100),
+        TextDim = Color3.fromRGB(140,90,0),
+        TextDark = Color3.fromRGB(70,45,0),
+        Border = Color3.fromRGB(60,38,0),
+        Success = Color3.fromRGB(255,200,0),
+        Warning = Color3.fromRGB(255,140,0),
+        Error = Color3.fromRGB(255,50,30),
+        Info = Color3.fromRGB(255,176,0),
+        Scan = Color3.fromRGB(255,176,0),
     },
-    Aurora = {
-        Bg = Color3.fromRGB(4,12,20),
-        Card = Color3.fromRGB(8,20,35),
-        CardHover = Color3.fromRGB(12,28,45),
-        Surface = Color3.fromRGB(10,24,40),
-        Elevated = Color3.fromRGB(15,32,52),
-        Accent1 = Color3.fromRGB(6,182,212),     -- Cyan
-        Accent2 = Color3.fromRGB(34,211,238),
-        AccentGlow = Color3.fromRGB(103,232,249),
-        Neon = Color3.fromRGB(6,182,212),
-        Text = Color3.fromRGB(236,254,255),
-        TextSub = Color3.fromRGB(125,175,195),
-        TextMuted = Color3.fromRGB(65,105,125),
-        Border = Color3.fromRGB(15,40,60),
-        Success = Color3.fromRGB(45,212,191),
-        Warning = Color3.fromRGB(253,224,71),
-        Error = Color3.fromRGB(251,113,133),
-        Info = Color3.fromRGB(56,189,248),
-        Toggle = Color3.fromRGB(12,32,50),
-        Slider = Color3.fromRGB(8,22,38),
-        Input = Color3.fromRGB(4,14,25),
+    Synth = {
+        Bg = Color3.fromRGB(5,2,12),
+        Card = Color3.fromRGB(12,5,25),
+        CardLit = Color3.fromRGB(20,8,38),
+        Surface = Color3.fromRGB(8,3,18),
+        Accent = Color3.fromRGB(255,0,110),
+        AccentDim = Color3.fromRGB(160,0,70),
+        AccentGlow = Color3.fromRGB(255,50,140),
+        Dim = Color3.fromRGB(80,0,40),
+        Text = Color3.fromRGB(255,0,110),
+        TextBright = Color3.fromRGB(255,100,170),
+        TextDim = Color3.fromRGB(140,0,60),
+        TextDark = Color3.fromRGB(70,0,30),
+        Border = Color3.fromRGB(60,0,30),
+        Success = Color3.fromRGB(0,240,200),
+        Warning = Color3.fromRGB(255,200,0),
+        Error = Color3.fromRGB(255,40,40),
+        Info = Color3.fromRGB(0,230,255),
+        Scan = Color3.fromRGB(255,0,110),
+        Accent2 = Color3.fromRGB(0,230,255),
     },
-    Ember = {
-        Bg = Color3.fromRGB(12,6,4),
-        Card = Color3.fromRGB(22,12,8),
-        CardHover = Color3.fromRGB(32,18,12),
-        Surface = Color3.fromRGB(26,14,10),
-        Elevated = Color3.fromRGB(35,20,14),
-        Accent1 = Color3.fromRGB(249,115,22),    -- Orange
-        Accent2 = Color3.fromRGB(251,146,60),
-        AccentGlow = Color3.fromRGB(253,186,116),
-        Neon = Color3.fromRGB(249,115,22),
-        Text = Color3.fromRGB(255,250,240),
-        TextSub = Color3.fromRGB(180,155,135),
-        TextMuted = Color3.fromRGB(110,85,65),
-        Border = Color3.fromRGB(45,28,18),
-        Success = Color3.fromRGB(74,222,128),
-        Warning = Color3.fromRGB(250,204,21),
-        Error = Color3.fromRGB(248,113,113),
-        Info = Color3.fromRGB(147,197,253),
-        Toggle = Color3.fromRGB(35,22,14),
-        Slider = Color3.fromRGB(26,16,10),
-        Input = Color3.fromRGB(15,8,5),
+    Arctic = {
+        Bg = Color3.fromRGB(2,6,10),
+        Card = Color3.fromRGB(5,14,22),
+        CardLit = Color3.fromRGB(8,22,32),
+        Surface = Color3.fromRGB(3,10,16),
+        Accent = Color3.fromRGB(0,229,255),
+        AccentDim = Color3.fromRGB(0,130,150),
+        AccentGlow = Color3.fromRGB(100,240,255),
+        Dim = Color3.fromRGB(0,70,80),
+        Text = Color3.fromRGB(0,220,245),
+        TextBright = Color3.fromRGB(140,250,255),
+        TextDim = Color3.fromRGB(0,110,130),
+        TextDark = Color3.fromRGB(0,50,60),
+        Border = Color3.fromRGB(0,45,55),
+        Success = Color3.fromRGB(0,255,180),
+        Warning = Color3.fromRGB(255,230,0),
+        Error = Color3.fromRGB(255,70,70),
+        Info = Color3.fromRGB(0,229,255),
+        Scan = Color3.fromRGB(0,229,255),
     },
-    Phantom = {
-        Bg = Color3.fromRGB(3,3,5),
-        Card = Color3.fromRGB(8,8,14),
-        CardHover = Color3.fromRGB(14,14,22),
-        Surface = Color3.fromRGB(10,10,18),
-        Elevated = Color3.fromRGB(16,16,26),
-        Accent1 = Color3.fromRGB(139,92,246),    -- Violet
-        Accent2 = Color3.fromRGB(167,139,250),
-        AccentGlow = Color3.fromRGB(196,181,253),
-        Neon = Color3.fromRGB(139,92,246),
-        Text = Color3.fromRGB(250,245,255),
-        TextSub = Color3.fromRGB(156,150,175),
-        TextMuted = Color3.fromRGB(80,75,100),
-        Border = Color3.fromRGB(22,18,38),
-        Success = Color3.fromRGB(74,222,128),
-        Warning = Color3.fromRGB(250,204,21),
-        Error = Color3.fromRGB(248,113,113),
-        Info = Color3.fromRGB(147,197,253),
-        Toggle = Color3.fromRGB(18,14,32),
-        Slider = Color3.fromRGB(12,10,22),
-        Input = Color3.fromRGB(6,5,12),
+    Blood = {
+        Bg = Color3.fromRGB(8,2,2),
+        Card = Color3.fromRGB(18,5,5),
+        CardLit = Color3.fromRGB(28,8,8),
+        Surface = Color3.fromRGB(12,3,3),
+        Accent = Color3.fromRGB(255,0,50),
+        AccentDim = Color3.fromRGB(150,0,30),
+        AccentGlow = Color3.fromRGB(255,60,90),
+        Dim = Color3.fromRGB(80,0,18),
+        Text = Color3.fromRGB(255,20,60),
+        TextBright = Color3.fromRGB(255,120,140),
+        TextDim = Color3.fromRGB(130,0,25),
+        TextDark = Color3.fromRGB(60,0,12),
+        Border = Color3.fromRGB(55,0,12),
+        Success = Color3.fromRGB(0,255,100),
+        Warning = Color3.fromRGB(255,180,0),
+        Error = Color3.fromRGB(255,0,50),
+        Info = Color3.fromRGB(255,100,120),
+        Scan = Color3.fromRGB(255,0,50),
     },
 }
 
 -- ══════════════════════════════════════
--- NOTIFICATION SYSTEM
+-- NOTIFICATION HOLDER
 -- ══════════════════════════════════════
-local _notifHolder = nil
+local _nHolder
 
 -- ══════════════════════════════════════
--- MAIN CREATE
+-- MAIN LIBRARY
 -- ══════════════════════════════════════
 function ZenithLib:Create(cfg)
     cfg = cfg or {}
     local lib = setmetatable({}, ZenithLib)
-    lib.Name = cfg.Name or "Zenith"
-    lib.Theme = Themes[cfg.Theme or "Midnight"] or Themes.Midnight
-    lib.ThemeName = cfg.Theme or "Midnight"
+    lib.Name = cfg.Name or "ZENITH"
+    lib.T = Themes[cfg.Theme or "Matrix"] or Themes.Matrix
     lib.Tabs = {}
     lib.Flags = {}
     lib.Toggled = true
     lib.CurrentTab = nil
-    lib.ToggleKey = cfg.ToggleKey or Enum.KeyCode.RightShift
-    lib.Mobile = isMobile
+    lib.Key = cfg.ToggleKey or Enum.KeyCode.RightShift
+
+    local T = lib.T
 
     -- Cleanup
-    pcall(function()
-        for _,v in ipairs(CoreGui:GetChildren()) do
-            if v.Name == "ZenithV3" then v:Destroy() end
-        end
-    end)
+    pcall(function() for _,v in ipairs(CoreGui:GetChildren()) do if v.Name=="ZenithTerm" then v:Destroy() end end end)
 
     local SG = Instance.new("ScreenGui")
-    SG.Name = "ZenithV3"
+    SG.Name = "ZenithTerm"
     SG.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     SG.ResetOnSpawn = false
     SG.IgnoreGuiInset = true
@@ -285,565 +222,503 @@ function ZenithLib:Create(cfg)
     lib.SG = SG
 
     -- Notif holder
-    _notifHolder = Instance.new("Frame")
-    _notifHolder.Name = "Notifs"
-    _notifHolder.BackgroundTransparency = 1
-    _notifHolder.Size = UDim2.new(0, isMobile and 250 or 320, 1, 0)
-    _notifHolder.Position = UDim2.new(1, isMobile and -255 or -325, 0, 0)
-    _notifHolder.ZIndex = 99999
-    _notifHolder.Parent = SG
-    local nl = addLayout(_notifHolder, Enum.FillDirection.Vertical, 10, Enum.HorizontalAlignment.Center)
-    nl.VerticalAlignment = Enum.VerticalAlignment.Bottom
-    addPadding(_notifHolder, 0, 20, 0, 5)
+    _nHolder = Instance.new("Frame")
+    _nHolder.BackgroundTransparency = 1
+    _nHolder.Size = UDim2.new(0, mob and 250 or 320, 1, 0)
+    _nHolder.Position = UDim2.new(1, mob and -255 or -325, 0, 0)
+    _nHolder.ZIndex = 99999
+    _nHolder.Parent = SG
+    local nl = lay(_nHolder); nl.VerticalAlignment = Enum.VerticalAlignment.Bottom
+    pad(_nHolder, 0, 20, 0, 5)
 
-    local T = lib.Theme
-    local W = isMobile and 365 or 560
-    local H = isMobile and 340 or 440
+    local W = mob and 360 or 550
+    local H = mob and 335 or 440
 
-    -- ═══════════════ BACKGROUND BLUR OVERLAY ═══════════════
-    local Overlay = Instance.new("Frame")
-    Overlay.Name = "Overlay"
-    Overlay.BackgroundColor3 = Color3.new(0,0,0)
-    Overlay.BackgroundTransparency = 0.92
-    Overlay.Size = UDim2.new(0,W+30,0,H+30)
-    Overlay.Position = UDim2.new(0.5,-(W+30)/2, 0.5,-(H+30)/2)
-    Overlay.ZIndex = 0
-    Overlay.BorderSizePixel = 0
-    Overlay.Parent = SG
-    addCorner(Overlay, 22)
+    -- ═══════════ CRT GLOW BACKDROP ═══════════
+    local CRTGlow = Instance.new("Frame")
+    CRTGlow.BackgroundColor3 = T.Accent
+    CRTGlow.BackgroundTransparency = 0.94
+    CRTGlow.Size = UDim2.new(0,W+40,0,H+40)
+    CRTGlow.Position = UDim2.new(0.5,-(W+40)/2,0.5,-(H+40)/2)
+    CRTGlow.BorderSizePixel = 0
+    CRTGlow.ZIndex = 0
+    CRTGlow.Parent = SG
+    c(CRTGlow, 6)
 
-    -- ═══════════════ MAIN WINDOW ═══════════════
+    -- ═══════════ MAIN FRAME ═══════════
     local Main = Instance.new("Frame")
-    Main.Name = "Main"
+    Main.Name = "Terminal"
     Main.BackgroundColor3 = T.Bg
-    Main.BackgroundTransparency = 0.02
     Main.BorderSizePixel = 0
     Main.Size = UDim2.new(0,W,0,H)
-    Main.Position = UDim2.new(0.5,-W/2, 0.5,-H/2)
+    Main.Position = UDim2.new(0.5,-W/2,0.5,-H/2)
     Main.ClipsDescendants = true
     Main.ZIndex = 1
     Main.Parent = SG
-    addCorner(Main, 16)
+    c(Main, 3)
+    local mainStroke = s(Main, T.Accent, 1.5, 0.35)
 
-    -- Outer glow stroke
-    local mainStroke = addStroke(Main, T.Accent1, 1.5, 0.6)
+    lib.Main = Main
+    lib.CRTGlow = CRTGlow
 
-    -- Animated top gradient bar
-    local TopBar = Instance.new("Frame")
-    TopBar.Name = "TopGlow"
-    TopBar.BackgroundColor3 = Color3.new(1,1,1)
-    TopBar.BorderSizePixel = 0
-    TopBar.Size = UDim2.new(1,0,0,3)
-    TopBar.Position = UDim2.new(0,0,0,0)
-    TopBar.ZIndex = 100
-    TopBar.Parent = Main
+    -- ═══════════ SCANLINES OVERLAY ═══════════
+    local ScanOverlay = Instance.new("Frame")
+    ScanOverlay.BackgroundTransparency = 1
+    ScanOverlay.Size = UDim2.new(1,0,1,0)
+    ScanOverlay.ZIndex = 998
+    ScanOverlay.Active = false
+    ScanOverlay.Parent = Main
 
-    local topGrad = Instance.new("UIGradient")
-    topGrad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, T.Accent1),
-        ColorSequenceKeypoint.new(0.3, T.Accent2),
-        ColorSequenceKeypoint.new(0.6, T.AccentGlow),
-        ColorSequenceKeypoint.new(1, T.Accent1),
-    })
-    topGrad.Parent = TopBar
+    for i = 0, math.ceil(H/8) do
+        local line = Instance.new("Frame")
+        line.BackgroundColor3 = Color3.new(0,0,0)
+        line.BackgroundTransparency = 0.92
+        line.BorderSizePixel = 0
+        line.Size = UDim2.new(1,0,0,1)
+        line.Position = UDim2.new(0,0,0,i*8)
+        line.ZIndex = 998
+        line.Active = false
+        line.Parent = ScanOverlay
+    end
 
-    -- Animate gradient shimmer
+    -- ═══════════ CRT FLICKER ═══════════
     task.spawn(function()
-        local off = 0
-        while TopBar and TopBar.Parent do
-            off = (off + 0.003) % 1
-            topGrad.Offset = Vector2.new(math.sin(off * math.pi * 2) * 0.5, 0)
-            RunService.Heartbeat:Wait()
+        while Main and Main.Parent do
+            task.wait(math.random(8,20))
+            if Main and Main.Parent then
+                tw(Main, {BackgroundTransparency = 0.04}, 0.05)
+                task.wait(0.05)
+                tw(Main, {BackgroundTransparency = 0}, 0.05)
+            end
         end
     end)
 
-    -- Inner subtle gradient overlay
-    local InnerGlow = Instance.new("Frame")
-    InnerGlow.BackgroundTransparency = 0.85
-    InnerGlow.BorderSizePixel = 0
-    InnerGlow.Size = UDim2.new(1,0,0,120)
-    InnerGlow.ZIndex = 1
-    InnerGlow.Parent = Main
-    addGradient(InnerGlow, T.Accent1, Color3.new(0,0,0), 180)
+    -- ═══════════ TOP ACCENT LINE ═══════════
+    local TopLine = Instance.new("Frame")
+    TopLine.BackgroundColor3 = T.Accent
+    TopLine.BorderSizePixel = 0
+    TopLine.Size = UDim2.new(1,0,0,2)
+    TopLine.ZIndex = 100
+    TopLine.Parent = Main
 
-    lib.Main = Main
-    lib.Overlay = Overlay
+    -- Animated glow pulse
+    task.spawn(function()
+        while TopLine and TopLine.Parent do
+            tw(TopLine, {BackgroundTransparency = 0.3}, 1.5)
+            task.wait(1.5)
+            tw(TopLine, {BackgroundTransparency = 0}, 1.5)
+            task.wait(1.5)
+        end
+    end)
 
-    -- ═══════════════ TITLE BAR ═══════════════
-    local TH = isMobile and 42 or 48
+    -- ═══════════ TITLE BAR ═══════════
+    local TH = mob and 38 or 46
 
-    local Title = Instance.new("Frame")
-    Title.Name = "Title"
-    Title.BackgroundTransparency = 1
-    Title.BorderSizePixel = 0
-    Title.Size = UDim2.new(1,0,0,TH)
-    Title.Position = UDim2.new(0,0,0,3)
-    Title.ZIndex = 50
-    Title.Parent = Main
+    local TitleBar = Instance.new("Frame")
+    TitleBar.BackgroundColor3 = T.Surface
+    TitleBar.BackgroundTransparency = 0.3
+    TitleBar.BorderSizePixel = 0
+    TitleBar.Size = UDim2.new(1,0,0,TH)
+    TitleBar.Position = UDim2.new(0,0,0,2)
+    TitleBar.ZIndex = 50
+    TitleBar.Parent = Main
 
-    -- Logo circle
-    local LogoBg = Instance.new("Frame")
-    LogoBg.BackgroundColor3 = T.Accent1
-    LogoBg.BackgroundTransparency = 0.15
-    LogoBg.Size = UDim2.new(0,30,0,30)
-    LogoBg.Position = UDim2.new(0, 14, 0.5, -15)
-    LogoBg.ZIndex = 51
-    LogoBg.Parent = Title
-    addCorner(LogoBg, 8)
-    addGradient(LogoBg, T.Accent1, T.Accent2, 135)
-
-    local LogoText = Instance.new("TextLabel")
-    LogoText.BackgroundTransparency = 1
-    LogoText.Size = UDim2.new(1,0,1,0)
-    LogoText.Font = Enum.Font.GothamBlack
-    LogoText.Text = string.sub(lib.Name, 1, 1):upper()
-    LogoText.TextColor3 = Color3.new(1,1,1)
-    LogoText.TextSize = 15
-    LogoText.ZIndex = 52
-    LogoText.Parent = LogoBg
+    -- [SYS] badge
+    local SysBadge = Instance.new("TextLabel")
+    SysBadge.BackgroundColor3 = T.Accent
+    SysBadge.BackgroundTransparency = 0.85
+    SysBadge.Size = UDim2.new(0, 38, 0, 18)
+    SysBadge.Position = UDim2.new(0, 8, 0.5, -9)
+    SysBadge.Font = Enum.Font.Code
+    SysBadge.Text = "[SYS]"
+    SysBadge.TextColor3 = T.Accent
+    SysBadge.TextSize = 9
+    SysBadge.ZIndex = 51
+    SysBadge.Parent = TitleBar
+    c(SysBadge, 2)
+    glow(SysBadge, T.AccentGlow, 0.65)
 
     -- Title text
     local TitleLbl = Instance.new("TextLabel")
     TitleLbl.BackgroundTransparency = 1
-    TitleLbl.Size = UDim2.new(0.5,-60,1,0)
+    TitleLbl.Size = UDim2.new(0.45,-50,1,0)
     TitleLbl.Position = UDim2.new(0,52,0,0)
-    TitleLbl.Font = Enum.Font.GothamBold
-    TitleLbl.Text = lib.Name
+    TitleLbl.Font = Enum.Font.Code
+    TitleLbl.Text = lib.Name:upper() .. "://terminal_v3"
     TitleLbl.TextColor3 = T.Text
-    TitleLbl.TextSize = isMobile and 14 or 16
+    TitleLbl.TextSize = mob and 11 or 13
     TitleLbl.TextXAlignment = Enum.TextXAlignment.Left
     TitleLbl.ZIndex = 51
-    TitleLbl.Parent = Title
+    TitleLbl.Parent = TitleBar
+    glow(TitleLbl, T.AccentGlow, 0.78)
 
-    -- Version badge
-    local VerBadge = Instance.new("Frame")
-    VerBadge.BackgroundColor3 = T.Accent1
-    VerBadge.BackgroundTransparency = 0.8
-    VerBadge.Size = UDim2.new(0, 38, 0, 18)
-    VerBadge.Position = UDim2.new(0, TitleLbl.Position.X.Offset + (isMobile and 100 or 120), 0.5, -9)
-    VerBadge.ZIndex = 51
-    VerBadge.Parent = Title
-    addCorner(VerBadge, 4)
-    addStroke(VerBadge, T.Accent1, 1, 0.5)
-
-    local VerText = Instance.new("TextLabel")
-    VerText.BackgroundTransparency = 1
-    VerText.Size = UDim2.new(1,0,1,0)
-    VerText.Font = Enum.Font.GothamBold
-    VerText.Text = "v3.0"
-    VerText.TextColor3 = T.Accent1
-    VerText.TextSize = 9
-    VerText.ZIndex = 52
-    VerText.Parent = VerBadge
-
-    -- AFK Status pill
-    local AfkPill = Instance.new("Frame")
-    AfkPill.BackgroundColor3 = T.Success
-    AfkPill.BackgroundTransparency = 0.8
-    AfkPill.Size = UDim2.new(0, 60, 0, 20)
-    AfkPill.Position = UDim2.new(1, -110, 0.5, -10)
-    AfkPill.ZIndex = 51
-    AfkPill.Parent = Title
-    addCorner(AfkPill, 10)
-    addStroke(AfkPill, T.Success, 1, 0.5)
-
-    local AfkDot = Instance.new("Frame")
-    AfkDot.BackgroundColor3 = T.Success
-    AfkDot.Size = UDim2.new(0,6,0,6)
-    AfkDot.Position = UDim2.new(0,8,0.5,-3)
-    AfkDot.ZIndex = 52
-    AfkDot.Parent = AfkPill
-    addCorner(AfkDot, 99)
+    -- Blinking cursor
+    local Cursor = Instance.new("TextLabel")
+    Cursor.BackgroundTransparency = 1
+    Cursor.Size = UDim2.new(0,10,1,0)
+    Cursor.Position = UDim2.new(0, mob and 185 or 230, 0, 0)
+    Cursor.Font = Enum.Font.Code
+    Cursor.Text = "▌"
+    Cursor.TextColor3 = T.Accent
+    Cursor.TextSize = mob and 12 or 14
+    Cursor.ZIndex = 51
+    Cursor.Parent = TitleBar
+    glow(Cursor, T.AccentGlow, 0.5)
 
     task.spawn(function()
-        while AfkDot and AfkDot.Parent do
-            tw(AfkDot, {BackgroundTransparency = 0.6}, 0.6)
-            task.wait(0.6)
-            tw(AfkDot, {BackgroundTransparency = 0}, 0.6)
-            task.wait(0.6)
+        while Cursor and Cursor.Parent do
+            Cursor.Visible = not Cursor.Visible
+            task.wait(0.5)
         end
     end)
 
+    -- AFK Status
     local AfkLbl = Instance.new("TextLabel")
     AfkLbl.BackgroundTransparency = 1
-    AfkLbl.Size = UDim2.new(1,-20,1,0)
-    AfkLbl.Position = UDim2.new(0,18,0,0)
-    AfkLbl.Font = Enum.Font.GothamBold
-    AfkLbl.Text = "AFK ✓"
+    AfkLbl.Size = UDim2.new(0, 65, 0, 18)
+    AfkLbl.Position = UDim2.new(1, mob and -105 or -120, 0.5, -9)
+    AfkLbl.Font = Enum.Font.Code
+    AfkLbl.Text = "[AFK:●]"
     AfkLbl.TextColor3 = T.Success
-    AfkLbl.TextSize = 9
-    AfkLbl.ZIndex = 52
-    AfkLbl.Parent = AfkPill
+    AfkLbl.TextSize = mob and 9 or 10
+    AfkLbl.ZIndex = 51
+    AfkLbl.Parent = TitleBar
+    glow(AfkLbl, T.Success, 0.6)
 
-    -- Close / Minimize button
+    -- Close/minimize
     local CloseBtn = Instance.new("TextButton")
-    CloseBtn.BackgroundColor3 = T.Elevated
-    CloseBtn.BackgroundTransparency = 0.3
-    CloseBtn.Size = UDim2.new(0,30,0,30)
-    CloseBtn.Position = UDim2.new(1,-40,0.5,-15)
-    CloseBtn.Font = Enum.Font.GothamBold
-    CloseBtn.Text = "━"
-    CloseBtn.TextColor3 = T.TextSub
-    CloseBtn.TextSize = 12
+    CloseBtn.BackgroundColor3 = T.Card
+    CloseBtn.BackgroundTransparency = 0.5
+    CloseBtn.Size = UDim2.new(0, 28, 0, 20)
+    CloseBtn.Position = UDim2.new(1, -36, 0.5, -10)
+    CloseBtn.Font = Enum.Font.Code
+    CloseBtn.Text = "[X]"
+    CloseBtn.TextColor3 = T.TextDim
+    CloseBtn.TextSize = 10
     CloseBtn.ZIndex = 52
     CloseBtn.BorderSizePixel = 0
     CloseBtn.AutoButtonColor = false
-    CloseBtn.Parent = Title
-    addCorner(CloseBtn, 8)
+    CloseBtn.Parent = TitleBar
+    c(CloseBtn, 2)
 
-    CloseBtn.MouseEnter:Connect(function()
-        tw(CloseBtn, {BackgroundColor3 = T.Error, BackgroundTransparency = 0.2, TextColor3 = Color3.new(1,1,1)}, 0.2)
-    end)
-    CloseBtn.MouseLeave:Connect(function()
-        tw(CloseBtn, {BackgroundColor3 = T.Elevated, BackgroundTransparency = 0.3, TextColor3 = T.TextSub}, 0.2)
-    end)
+    CloseBtn.MouseEnter:Connect(function() tw(CloseBtn, {TextColor3 = T.Error, BackgroundTransparency = 0.2}, 0.15) end)
+    CloseBtn.MouseLeave:Connect(function() tw(CloseBtn, {TextColor3 = T.TextDim, BackgroundTransparency = 0.5}, 0.15) end)
 
-    -- Title divider
-    local TDiv = Instance.new("Frame")
-    TDiv.BackgroundColor3 = T.Border
-    TDiv.BackgroundTransparency = 0.3
-    TDiv.BorderSizePixel = 0
-    TDiv.Size = UDim2.new(1,-24,0,1)
-    TDiv.Position = UDim2.new(0,12,1,-1)
-    TDiv.ZIndex = 50
-    TDiv.Parent = Title
+    -- Title divider (dashed look)
+    local TDash = Instance.new("TextLabel")
+    TDash.BackgroundTransparency = 1
+    TDash.Size = UDim2.new(1,-16,0,10)
+    TDash.Position = UDim2.new(0,8,1,-8)
+    TDash.Font = Enum.Font.Code
+    TDash.Text = string.rep("─", 80)
+    TDash.TextColor3 = T.Border
+    TDash.TextSize = 8
+    TDash.TextXAlignment = Enum.TextXAlignment.Left
+    TDash.TextTruncate = Enum.TextTruncate.AtEnd
+    TDash.ZIndex = 50
+    TDash.Parent = TitleBar
 
-    -- ═══════════════ TAB BAR ═══════════════
-    local tabH = isMobile and 32 or 0
-    local tabW = isMobile and 0 or 145
+    -- ═══════════ TAB BAR ═══════════
+    local tbW = mob and 0 or 135
+    local tbH = mob and 30 or 0
 
-    local TabContainer
-    if isMobile then
-        TabContainer = Instance.new("ScrollingFrame")
-        TabContainer.BackgroundTransparency = 1
-        TabContainer.BorderSizePixel = 0
-        TabContainer.Size = UDim2.new(1,-16,0,tabH)
-        TabContainer.Position = UDim2.new(0,8,0,TH+6)
-        TabContainer.ScrollBarThickness = 0
-        TabContainer.ScrollingDirection = Enum.ScrollingDirection.X
-        TabContainer.AutomaticCanvasSize = Enum.AutomaticSize.X
-        TabContainer.CanvasSize = UDim2.new(0,0,0,0)
-        TabContainer.ZIndex = 40
-        TabContainer.Parent = Main
-
-        addLayout(TabContainer, Enum.FillDirection.Horizontal, 6)
-        addPadding(TabContainer, 2, 2, 4, 4)
+    local TabBar
+    if mob then
+        TabBar = Instance.new("ScrollingFrame")
+        TabBar.BackgroundTransparency = 1
+        TabBar.BorderSizePixel = 0
+        TabBar.Size = UDim2.new(1,0,0,tbH)
+        TabBar.Position = UDim2.new(0,0,0,TH+2)
+        TabBar.ScrollBarThickness = 0
+        TabBar.ScrollingDirection = Enum.ScrollingDirection.X
+        TabBar.AutomaticCanvasSize = Enum.AutomaticSize.X
+        TabBar.CanvasSize = UDim2.new(0,0,0,0)
+        TabBar.ZIndex = 40
+        TabBar.Parent = Main
+        lay(TabBar, Enum.FillDirection.Horizontal, 3)
+        pad(TabBar, 3, 3, 6, 6)
     else
-        TabContainer = Instance.new("ScrollingFrame")
-        TabContainer.BackgroundColor3 = T.Surface
-        TabContainer.BackgroundTransparency = 0.4
-        TabContainer.BorderSizePixel = 0
-        TabContainer.Size = UDim2.new(0,tabW,1,-(TH+8))
-        TabContainer.Position = UDim2.new(0,0,0,TH+5)
-        TabContainer.ScrollBarThickness = 0
-        TabContainer.AutomaticCanvasSize = Enum.AutomaticSize.Y
-        TabContainer.CanvasSize = UDim2.new(0,0,0,0)
-        TabContainer.ZIndex = 40
-        TabContainer.Parent = Main
+        TabBar = Instance.new("ScrollingFrame")
+        TabBar.BackgroundColor3 = T.Surface
+        TabBar.BackgroundTransparency = 0.5
+        TabBar.BorderSizePixel = 0
+        TabBar.Size = UDim2.new(0,tbW,1,-(TH+4))
+        TabBar.Position = UDim2.new(0,0,0,TH+2)
+        TabBar.ScrollBarThickness = 0
+        TabBar.AutomaticCanvasSize = Enum.AutomaticSize.Y
+        TabBar.CanvasSize = UDim2.new(0,0,0,0)
+        TabBar.ZIndex = 40
+        TabBar.Parent = Main
+        lay(TabBar, Enum.FillDirection.Vertical, 2, Enum.HorizontalAlignment.Center)
+        pad(TabBar, 8, 8, 6, 6)
 
-        addLayout(TabContainer, Enum.FillDirection.Vertical, 4, Enum.HorizontalAlignment.Center)
-        addPadding(TabContainer, 10, 10, 8, 8)
-
-        -- Sidebar right border
-        local sbDiv = Instance.new("Frame")
-        sbDiv.BackgroundColor3 = T.Border
-        sbDiv.BackgroundTransparency = 0.3
-        sbDiv.BorderSizePixel = 0
-        sbDiv.Size = UDim2.new(0,1,1,-(TH+8))
-        sbDiv.Position = UDim2.new(0,tabW,0,TH+5)
-        sbDiv.ZIndex = 45
-        sbDiv.Parent = Main
+        -- Sidebar divider
+        local sbDash = Instance.new("TextLabel")
+        sbDash.BackgroundTransparency = 1
+        sbDash.Size = UDim2.new(0,10,1,-(TH+10))
+        sbDash.Position = UDim2.new(0,tbW-1,0,TH+5)
+        sbDash.Font = Enum.Font.Code
+        sbDash.Text = string.rep("│\n", 60)
+        sbDash.TextColor3 = T.Border
+        sbDash.TextSize = 8
+        sbDash.TextYAlignment = Enum.TextYAlignment.Top
+        sbDash.TextWrapped = false
+        sbDash.ZIndex = 45
+        sbDash.Parent = Main
     end
+    lib.TabBar = TabBar
 
-    lib.TabContainer = TabContainer
-
-    -- ═══════════════ CONTENT ═══════════════
+    -- ═══════════ CONTENT AREA ═══════════
     local Content = Instance.new("Frame")
-    Content.Name = "Content"
     Content.BackgroundTransparency = 1
     Content.BorderSizePixel = 0
     Content.ClipsDescendants = true
     Content.ZIndex = 2
     Content.Parent = Main
 
-    if isMobile then
-        Content.Size = UDim2.new(1,0,1,-(TH+tabH+12))
-        Content.Position = UDim2.new(0,0,0,TH+tabH+10)
+    if mob then
+        Content.Size = UDim2.new(1,0,1,-(TH+tbH+6))
+        Content.Position = UDim2.new(0,0,0,TH+tbH+4)
     else
-        Content.Size = UDim2.new(1,-tabW-1,1,-(TH+5))
-        Content.Position = UDim2.new(0,tabW+1,0,TH+5)
+        Content.Size = UDim2.new(1,-tbW,1,-(TH+2))
+        Content.Position = UDim2.new(0,tbW,0,TH+2)
     end
-
     lib.Content = Content
 
-    -- ═══════════════ DRAGGING ═══════════════
+    -- ═══════════ BOOT SEQUENCE ═══════════
+    local BootFrame = Instance.new("Frame")
+    BootFrame.BackgroundColor3 = T.Bg
+    BootFrame.Size = UDim2.new(1,0,1,0)
+    BootFrame.ZIndex = 997
+    BootFrame.BorderSizePixel = 0
+    BootFrame.Parent = Main
+
+    local BootText = Instance.new("TextLabel")
+    BootText.BackgroundTransparency = 1
+    BootText.Size = UDim2.new(1,-30,1,-20)
+    BootText.Position = UDim2.new(0,15,0,10)
+    BootText.Font = Enum.Font.Code
+    BootText.Text = ""
+    BootText.TextColor3 = T.Text
+    BootText.TextSize = mob and 10 or 12
+    BootText.TextXAlignment = Enum.TextXAlignment.Left
+    BootText.TextYAlignment = Enum.TextYAlignment.Top
+    BootText.TextWrapped = true
+    BootText.RichText = true
+    BootText.ZIndex = 997
+    BootText.Parent = BootFrame
+    glow(BootText, T.AccentGlow, 0.8)
+
+    -- ═══════════ DRAGGING ═══════════
     local dragging, dragStart, startPos
 
-    Title.InputBegan:Connect(function(i)
-        if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
-            dragging = true; dragStart = i.Position; startPos = Main.Position
+    TitleBar.InputBegan:Connect(function(i)
+        if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
+            dragging=true; dragStart=i.Position; startPos=Main.Position
         end
     end)
-    Title.InputEnded:Connect(function(i)
-        if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
-            dragging = false
-        end
+    TitleBar.InputEnded:Connect(function(i)
+        if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then dragging=false end
     end)
     UIS.InputChanged:Connect(function(i)
-        if dragging and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
+        if dragging and (i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch) then
             local d = i.Position - dragStart
-            local np = UDim2.new(startPos.X.Scale, startPos.X.Offset+d.X, startPos.Y.Scale, startPos.Y.Offset+d.Y)
-            tw(Main, {Position = np}, 0.05)
-            tw(Overlay, {Position = UDim2.new(np.X.Scale, np.X.Offset-15, np.Y.Scale, np.Y.Offset-15)}, 0.05)
+            local np = UDim2.new(startPos.X.Scale,startPos.X.Offset+d.X,startPos.Y.Scale,startPos.Y.Offset+d.Y)
+            tw(Main, {Position=np}, 0.04)
+            tw(CRTGlow, {Position=UDim2.new(np.X.Scale,np.X.Offset-20,np.Y.Scale,np.Y.Offset-20)}, 0.04)
         end
     end)
 
-    -- ═══════════════ TOGGLE ═══════════════
+    -- ═══════════ TOGGLE ═══════════
     local function ToggleUI()
         lib.Toggled = not lib.Toggled
         if lib.Toggled then
-            Main.Visible = true; Overlay.Visible = true
-            Main.Size = UDim2.new(0,W,0,0)
-            tw(Main, {Size = UDim2.new(0,W,0,H)}, 0.35, Enum.EasingStyle.Back)
-            tw(Overlay, {Size = UDim2.new(0,W+30,0,H+30), BackgroundTransparency = 0.92}, 0.35, Enum.EasingStyle.Back)
-            tw(mainStroke, {Transparency = 0.6}, 0.4)
+            Main.Visible = true; CRTGlow.Visible = true
+            Main.BackgroundTransparency = 1
+            tw(Main, {BackgroundTransparency = 0}, 0.3)
+            tw(mainStroke, {Transparency = 0.35}, 0.3)
+            tw(CRTGlow, {BackgroundTransparency = 0.94}, 0.3)
         else
-            tw(Main, {Size = UDim2.new(0,W,0,0)}, 0.3).Completed:Connect(function()
-                if not lib.Toggled then Main.Visible = false; Overlay.Visible = false end
+            tw(Main, {BackgroundTransparency = 1}, 0.25).Completed:Connect(function()
+                if not lib.Toggled then Main.Visible = false; CRTGlow.Visible = false end
             end)
-            tw(Overlay, {Size = UDim2.new(0,W+30,0,0), BackgroundTransparency = 1}, 0.3)
             tw(mainStroke, {Transparency = 1}, 0.2)
+            tw(CRTGlow, {BackgroundTransparency = 1}, 0.2)
         end
     end
 
     CloseBtn.MouseButton1Click:Connect(ToggleUI)
-    UIS.InputBegan:Connect(function(i,g)
-        if not g and i.KeyCode == lib.ToggleKey then ToggleUI() end
-    end)
+    UIS.InputBegan:Connect(function(i,g) if not g and i.KeyCode == lib.Key then ToggleUI() end end)
 
-    -- Mobile toggle orb
-    if isMobile then
+    -- Mobile orb
+    if mob then
         local Orb = Instance.new("TextButton")
-        Orb.BackgroundColor3 = T.Accent1
-        Orb.Size = UDim2.new(0,48,0,48)
-        Orb.Position = UDim2.new(0,8,0.5,-24)
-        Orb.Font = Enum.Font.GothamBlack
-        Orb.Text = string.sub(lib.Name,1,1):upper()
-        Orb.TextColor3 = Color3.new(1,1,1)
-        Orb.TextSize = 20
+        Orb.BackgroundColor3 = T.Bg
+        Orb.Size = UDim2.new(0,42,0,42)
+        Orb.Position = UDim2.new(0,6,0.5,-21)
+        Orb.Font = Enum.Font.Code
+        Orb.Text = "[>_"
+        Orb.TextColor3 = T.Accent
+        Orb.TextSize = 14
         Orb.ZIndex = 99999
         Orb.BorderSizePixel = 0
         Orb.AutoButtonColor = false
         Orb.Parent = SG
-        addCorner(Orb, 14)
-        addGradient(Orb, T.Accent1, T.Accent2, 135)
-        addStroke(Orb, T.AccentGlow, 2, 0.4)
+        c(Orb, 4)
+        s(Orb, T.Accent, 1.5, 0.3)
+        glow(Orb, T.AccentGlow, 0.5)
 
         local od,os2,op
         Orb.InputBegan:Connect(function(i) if i.UserInputType==Enum.UserInputType.Touch then od=true;os2=i.Position;op=Orb.Position end end)
-        Orb.InputEnded:Connect(function(i)
-            if i.UserInputType==Enum.UserInputType.Touch then
-                if od and (i.Position-os2).Magnitude < 12 then ToggleUI() end
-                od = false
-            end
-        end)
+        Orb.InputEnded:Connect(function(i) if i.UserInputType==Enum.UserInputType.Touch then if od and (i.Position-os2).Magnitude<12 then ToggleUI() end; od=false end end)
         UIS.InputChanged:Connect(function(i) if od and i.UserInputType==Enum.UserInputType.Touch then local d=i.Position-os2; Orb.Position=UDim2.new(op.X.Scale,op.X.Offset+d.X,op.Y.Scale,op.Y.Offset+d.Y) end end)
     end
 
-    -- Intro
-    Main.Size = UDim2.new(0,W,0,0)
-    Overlay.Size = UDim2.new(0,W+30,0,0)
-    mainStroke.Transparency = 1
-    task.wait(0.05)
-    tw(Main, {Size = UDim2.new(0,W,0,H)}, 0.45, Enum.EasingStyle.Back)
-    tw(Overlay, {Size = UDim2.new(0,W+30,0,H+30)}, 0.45, Enum.EasingStyle.Back)
-    tw(mainStroke, {Transparency = 0.6}, 0.6)
+    -- ═══════════ BOOT ANIMATION ═══════════
+    task.spawn(function()
+        local bootLines = {
+            '<font color="#' .. T.TextDim:ToHex() .. '">[BOOT]</font> Initializing ' .. lib.Name:upper() .. '://v3.0...',
+            '<font color="#' .. T.TextDim:ToHex() .. '">[LOAD]</font> Core modules............ <font color="#' .. T.Success:ToHex() .. '">OK</font>',
+            '<font color="#' .. T.TextDim:ToHex() .. '">[PROT]</font> Anti-AFK engaged........ <font color="#' .. T.Success:ToHex() .. '">OK</font>',
+            '<font color="#' .. T.TextDim:ToHex() .. '">[SCAN]</font> CRT renderer............ <font color="#' .. T.Success:ToHex() .. '">OK</font>',
+            '<font color="#' .. T.TextDim:ToHex() .. '">[USER]</font> Welcome, <font color="#' .. T.Accent:ToHex() .. '">' .. Plr.Name .. '</font>',
+            '<font color="#' .. T.Success:ToHex() .. '">[RDY!]</font> Terminal ready. All systems nominal.',
+        }
 
-    -- ═══════════════ NOTIFY ═══════════════
+        local txt = ""
+        for i, line in ipairs(bootLines) do
+            txt = txt .. line .. "\n"
+            BootText.Text = txt
+            task.wait(0.2)
+        end
+
+        task.wait(0.5)
+        tw(BootFrame, {BackgroundTransparency = 1}, 0.4)
+        tw(BootText, {TextTransparency = 1, TextStrokeTransparency = 1}, 0.4).Completed:Connect(function()
+            BootFrame:Destroy()
+        end)
+    end)
+
+    -- ═══════════ NOTIFY ═══════════
     function lib:Notify(cfg2)
         cfg2 = cfg2 or {}
-        local nTitle = cfg2.Title or "Notification"
+        local nTitle = cfg2.Title or "ALERT"
         local nMsg = cfg2.Message or ""
         local nDur = cfg2.Duration or 4
         local nType = cfg2.Type or "Info"
 
+        local icons = {Info="[i]", Success="[✓]", Warning="[!]", Error="[✕]"}
         local cols = {Info=T.Info, Success=T.Success, Warning=T.Warning, Error=T.Error}
-        local icons2 = {Info="●", Success="✓", Warning="▲", Error="✕"}
-        local nCol = cols[nType] or T.Accent1
+        local nCol = cols[nType] or T.Accent
 
         local nf = Instance.new("Frame")
-        nf.BackgroundColor3 = T.Card
-        nf.BackgroundTransparency = 0.05
+        nf.BackgroundColor3 = T.Bg
         nf.BorderSizePixel = 0
-        nf.Size = UDim2.new(1,-10,0,72)
+        nf.Size = UDim2.new(1,-10,0,0)
+        nf.AutomaticSize = Enum.AutomaticSize.Y
         nf.ZIndex = 99999
         nf.ClipsDescendants = true
-        nf.Parent = _notifHolder
-        addCorner(nf, 12)
-        addStroke(nf, nCol, 1, 0.5)
+        nf.Parent = _nHolder
+        c(nf, 3)
+        s(nf, nCol, 1, 0.4)
 
-        -- Glow side
-        local gs = Instance.new("Frame")
-        gs.BackgroundColor3 = nCol
-        gs.BorderSizePixel = 0
-        gs.Size = UDim2.new(0,3,1,-8)
-        gs.Position = UDim2.new(0,4,0,4)
-        gs.ZIndex = 100000
-        gs.Parent = nf
-        addCorner(gs, 2)
+        pad(nf, 8, 8, 10, 10)
+        local nly = lay(nf, Enum.FillDirection.Vertical, 2)
 
-        -- Icon circle
-        local ic = Instance.new("Frame")
-        ic.BackgroundColor3 = nCol
-        ic.BackgroundTransparency = 0.8
-        ic.Size = UDim2.new(0,28,0,28)
-        ic.Position = UDim2.new(0,16,0,10)
-        ic.ZIndex = 100000
-        ic.Parent = nf
-        addCorner(ic, 8)
+        -- Header: [!] ALERT
+        local nh = Instance.new("TextLabel")
+        nh.BackgroundTransparency = 1
+        nh.Size = UDim2.new(1,0,0,16)
+        nh.Font = Enum.Font.Code
+        nh.Text = (icons[nType] or "[i]") .. " " .. nTitle:upper()
+        nh.TextColor3 = nCol
+        nh.TextSize = 11
+        nh.TextXAlignment = Enum.TextXAlignment.Left
+        nh.ZIndex = 100000
+        nh.Parent = nf
+        glow(nh, nCol, 0.6)
 
-        local it = Instance.new("TextLabel")
-        it.BackgroundTransparency = 1
-        it.Size = UDim2.new(1,0,1,0)
-        it.Font = Enum.Font.GothamBold
-        it.Text = icons2[nType] or "●"
-        it.TextColor3 = nCol
-        it.TextSize = 14
-        it.ZIndex = 100001
-        it.Parent = ic
+        -- Message
+        local nm = Instance.new("TextLabel")
+        nm.BackgroundTransparency = 1
+        nm.Size = UDim2.new(1,0,0,0)
+        nm.AutomaticSize = Enum.AutomaticSize.Y
+        nm.Font = Enum.Font.Code
+        nm.Text = ":: " .. nMsg
+        nm.TextColor3 = T.TextDim
+        nm.TextSize = 10
+        nm.TextXAlignment = Enum.TextXAlignment.Left
+        nm.TextWrapped = true
+        nm.ZIndex = 100000
+        nm.Parent = nf
 
-        local nt2 = Instance.new("TextLabel")
-        nt2.BackgroundTransparency = 1
-        nt2.Size = UDim2.new(1,-60,0,18)
-        nt2.Position = UDim2.new(0,50,0,10)
-        nt2.Font = Enum.Font.GothamBold
-        nt2.Text = nTitle
-        nt2.TextColor3 = T.Text
-        nt2.TextSize = 12
-        nt2.TextXAlignment = Enum.TextXAlignment.Left
-        nt2.TextTruncate = Enum.TextTruncate.AtEnd
-        nt2.ZIndex = 100000
-        nt2.Parent = nf
-
-        local nm2 = Instance.new("TextLabel")
-        nm2.BackgroundTransparency = 1
-        nm2.Size = UDim2.new(1,-60,0,28)
-        nm2.Position = UDim2.new(0,50,0,30)
-        nm2.Font = Enum.Font.Gotham
-        nm2.Text = nMsg
-        nm2.TextColor3 = T.TextSub
-        nm2.TextSize = 10
-        nm2.TextXAlignment = Enum.TextXAlignment.Left
-        nm2.TextWrapped = true
-        nm2.ZIndex = 100000
-        nm2.Parent = nf
-
-        -- Progress
+        -- Progress bar (terminal style)
         local pbg = Instance.new("Frame")
-        pbg.BackgroundColor3 = T.Elevated
+        pbg.BackgroundColor3 = T.Card
         pbg.BorderSizePixel = 0
-        pbg.Size = UDim2.new(1,-16,0,2)
-        pbg.Position = UDim2.new(0,8,1,-6)
+        pbg.Size = UDim2.new(1,0,0,3)
         pbg.ZIndex = 100000
         pbg.Parent = nf
-        addCorner(pbg, 1)
+        c(pbg, 1)
 
-        local pf2 = Instance.new("Frame")
-        pf2.BackgroundColor3 = nCol
-        pf2.BorderSizePixel = 0
-        pf2.Size = UDim2.new(1,0,1,0)
-        pf2.ZIndex = 100001
-        pf2.Parent = pbg
-        addCorner(pf2, 1)
+        local pf = Instance.new("Frame")
+        pf.BackgroundColor3 = nCol
+        pf.BorderSizePixel = 0
+        pf.Size = UDim2.new(1,0,1,0)
+        pf.ZIndex = 100001
+        pf.Parent = pbg
+        c(pf, 1)
 
-        nf.Position = UDim2.new(1,40,0,0)
-        tw(nf, {Position = UDim2.new(0,5,0,0)}, 0.4, Enum.EasingStyle.Quint)
-        tw(pf2, {Size = UDim2.new(0,0,1,0)}, nDur, Enum.EasingStyle.Linear)
+        -- Animate in
+        nf.Position = UDim2.new(1,30,0,0)
+        tw(nf, {Position = UDim2.new(0,5,0,0)}, 0.35, Enum.EasingStyle.Quint)
+        tw(pf, {Size = UDim2.new(0,0,1,0)}, nDur, Enum.EasingStyle.Linear)
 
         task.spawn(function()
             task.wait(nDur)
-            tw(nf, {Position = UDim2.new(1,40,0,0), BackgroundTransparency = 1}, 0.35).Completed:Connect(function() nf:Destroy() end)
+            tw(nf, {Position = UDim2.new(1,30,0,0)}, 0.3).Completed:Connect(function() nf:Destroy() end)
         end)
     end
 
-    -- ═══════════════ ADD TAB ═══════════════
+    -- ═══════════ ADD TAB ═══════════
     function lib:AddTab(cfg3)
         cfg3 = cfg3 or {}
-        local tabName = cfg3.Name or "Tab"
-        local tabIcon = cfg3.Icon or "◆"
+        local tabName = cfg3.Name or "tab"
+        local tabIcon = cfg3.Icon or ">"
         local tab = {Name = tabName}
 
         -- Tab button
         local TabBtn
-        if isMobile then
+        if mob then
             TabBtn = Instance.new("TextButton")
             TabBtn.BackgroundColor3 = T.Card
-            TabBtn.BackgroundTransparency = 0.4
-            TabBtn.Size = UDim2.new(0,90,0,26)
-            TabBtn.Font = Enum.Font.GothamBold
-            TabBtn.Text = tabIcon.." "..tabName
-            TabBtn.TextColor3 = T.TextMuted
+            TabBtn.BackgroundTransparency = 0.5
+            TabBtn.Size = UDim2.new(0,85,0,22)
+            TabBtn.Font = Enum.Font.Code
+            TabBtn.Text = "  " .. tabName:lower() .. "_"
+            TabBtn.TextColor3 = T.TextDark
             TabBtn.TextSize = 10
+            TabBtn.TextXAlignment = Enum.TextXAlignment.Left
             TabBtn.BorderSizePixel = 0
             TabBtn.AutoButtonColor = false
             TabBtn.ZIndex = 41
-            TabBtn.Parent = TabContainer
-            addCorner(TabBtn, 8)
+            TabBtn.Parent = TabBar
+            c(TabBtn, 2)
         else
             TabBtn = Instance.new("TextButton")
-            TabBtn.BackgroundColor3 = T.Card
-            TabBtn.BackgroundTransparency = 0.6
-            TabBtn.Size = UDim2.new(1,0,0,38)
-            TabBtn.Font = Enum.Font.GothamSemibold
-            TabBtn.Text = ""
+            TabBtn.BackgroundTransparency = 1
+            TabBtn.Size = UDim2.new(1,0,0,28)
+            TabBtn.Font = Enum.Font.Code
+            TabBtn.Text = "   " .. tabName:lower() .. "_"
+            TabBtn.TextColor3 = T.TextDark
+            TabBtn.TextSize = 12
+            TabBtn.TextXAlignment = Enum.TextXAlignment.Left
             TabBtn.BorderSizePixel = 0
             TabBtn.AutoButtonColor = false
             TabBtn.ZIndex = 41
-            TabBtn.Parent = TabContainer
-            addCorner(TabBtn, 10)
-
-            -- Tab icon
-            local tIcon = Instance.new("TextLabel")
-            tIcon.BackgroundTransparency = 1
-            tIcon.Size = UDim2.new(0,28,1,0)
-            tIcon.Position = UDim2.new(0,10,0,0)
-            tIcon.Font = Enum.Font.GothamBold
-            tIcon.Text = tabIcon
-            tIcon.TextColor3 = T.TextMuted
-            tIcon.TextSize = 14
-            tIcon.ZIndex = 42
-            tIcon.Parent = TabBtn
-
-            local tLabel = Instance.new("TextLabel")
-            tLabel.Name = "Label"
-            tLabel.BackgroundTransparency = 1
-            tLabel.Size = UDim2.new(1,-45,1,0)
-            tLabel.Position = UDim2.new(0,38,0,0)
-            tLabel.Font = Enum.Font.GothamSemibold
-            tLabel.Text = tabName
-            tLabel.TextColor3 = T.TextMuted
-            tLabel.TextSize = 12
-            tLabel.TextXAlignment = Enum.TextXAlignment.Left
-            tLabel.ZIndex = 42
-            tLabel.Parent = TabBtn
-
-            -- Active indicator
-            local indicator = Instance.new("Frame")
-            indicator.Name = "Indicator"
-            indicator.BackgroundColor3 = T.Accent1
-            indicator.BackgroundTransparency = 1
-            indicator.BorderSizePixel = 0
-            indicator.Size = UDim2.new(0,3,0.6,0)
-            indicator.Position = UDim2.new(0,0,0.2,0)
-            indicator.ZIndex = 43
-            indicator.Parent = TabBtn
-            addCorner(indicator, 2)
-
-            tab._icon = tIcon
-            tab._label = tLabel
-            tab._indicator = indicator
+            TabBtn.Parent = TabBar
+            c(TabBtn, 2)
         end
-
         tab.Button = TabBtn
 
         -- Page
@@ -854,55 +729,41 @@ function ZenithLib:Create(cfg)
         Page.CanvasSize = UDim2.new(0,0,0,0)
         Page.AutomaticCanvasSize = Enum.AutomaticSize.Y
         Page.ScrollBarThickness = 2
-        Page.ScrollBarImageColor3 = T.Accent1
+        Page.ScrollBarImageColor3 = T.Accent
         Page.ScrollBarImageTransparency = 0.5
         Page.Visible = false
         Page.ZIndex = 2
         Page.Parent = Content
-
-        addLayout(Page, Enum.FillDirection.Vertical, 6, Enum.HorizontalAlignment.Center)
-        addPadding(Page, 8, 15, 10, 10)
+        lay(Page, Enum.FillDirection.Vertical, 4)
+        pad(Page, 6, 12, 8, 8)
 
         tab.Page = Page
 
         local function SelectTab()
-            for _, t in ipairs(lib.Tabs) do
-                t.Page.Visible = false
-                if isMobile then
-                    tw(t.Button, {BackgroundTransparency = 0.4, TextColor3 = T.TextMuted}, 0.2)
+            for _,t2 in ipairs(lib.Tabs) do
+                t2.Page.Visible = false
+                if mob then
+                    tw(t2.Button, {BackgroundTransparency = 0.5, TextColor3 = T.TextDark}, 0.2)
                 else
-                    tw(t.Button, {BackgroundTransparency = 0.6}, 0.2)
-                    if t._icon then tw(t._icon, {TextColor3 = T.TextMuted}, 0.2) end
-                    if t._label then tw(t._label, {TextColor3 = T.TextMuted}, 0.2) end
-                    if t._indicator then tw(t._indicator, {BackgroundTransparency = 1}, 0.2) end
+                    t2.Button.Text = "   " .. t2.Name:lower() .. "_"
+                    tw(t2.Button, {TextColor3 = T.TextDark, BackgroundTransparency = 1}, 0.2)
                 end
             end
             Page.Visible = true
-            if isMobile then
-                tw(TabBtn, {BackgroundTransparency = 0.1, TextColor3 = T.Text}, 0.25)
-                TabBtn.BackgroundColor3 = T.Accent1
+            if mob then
+                TabBtn.BackgroundColor3 = T.Accent
+                tw(TabBtn, {BackgroundTransparency = 0.2, TextColor3 = T.Bg}, 0.25)
             else
-                tw(TabBtn, {BackgroundTransparency = 0.2, BackgroundColor3 = T.Accent1}, 0.25)
-                if tab._icon then tw(tab._icon, {TextColor3 = Color3.new(1,1,1)}, 0.25) end
-                if tab._label then tw(tab._label, {TextColor3 = Color3.new(1,1,1)}, 0.25) end
-                if tab._indicator then tw(tab._indicator, {BackgroundTransparency = 0}, 0.25) end
+                TabBtn.Text = " ► " .. tabName:lower() .. "_▌"
+                tw(TabBtn, {TextColor3 = T.Accent, BackgroundTransparency = 0.7, BackgroundColor3 = T.Card}, 0.25)
             end
             lib.CurrentTab = tab
         end
 
         TabBtn.MouseButton1Click:Connect(SelectTab)
-
-        if not isMobile then
-            TabBtn.MouseEnter:Connect(function()
-                if lib.CurrentTab ~= tab then
-                    tw(TabBtn, {BackgroundTransparency = 0.35}, 0.15)
-                end
-            end)
-            TabBtn.MouseLeave:Connect(function()
-                if lib.CurrentTab ~= tab then
-                    tw(TabBtn, {BackgroundTransparency = 0.6}, 0.15)
-                end
-            end)
+        if not mob then
+            TabBtn.MouseEnter:Connect(function() if lib.CurrentTab~=tab then tw(TabBtn,{TextColor3=T.TextDim},0.15) end end)
+            TabBtn.MouseLeave:Connect(function() if lib.CurrentTab~=tab then tw(TabBtn,{TextColor3=T.TextDark},0.15) end end)
         end
 
         table.insert(lib.Tabs, tab)
@@ -912,135 +773,134 @@ function ZenithLib:Create(cfg)
         local function Card(h)
             local f = Instance.new("Frame")
             f.BackgroundColor3 = T.Card
-            f.BackgroundTransparency = 0.15
+            f.BackgroundTransparency = 0.25
             f.BorderSizePixel = 0
-            f.Size = UDim2.new(1,0,0,h or 42)
+            f.Size = UDim2.new(1,0,0,h or 38)
             f.ZIndex = 10
             f.Parent = Page
-            addCorner(f, 10)
-            addStroke(f, T.Border, 1, 0.6)
+            c(f, 3)
+            s(f, T.Border, 1, 0.65)
             return f
         end
 
-        -- SECTION
-        function tab:AddSection(c)
+        -- ── SECTION ──
+        function tab:AddSection(cfg4)
             local sf = Instance.new("Frame")
             sf.BackgroundTransparency = 1
-            sf.Size = UDim2.new(1,0,0,24)
+            sf.Size = UDim2.new(1,0,0,20)
             sf.ZIndex = 10
             sf.Parent = Page
 
-            local dot = Instance.new("Frame")
-            dot.BackgroundColor3 = T.Accent1
-            dot.Size = UDim2.new(0,4,0,4)
-            dot.Position = UDim2.new(0,2,0.5,-2)
-            dot.ZIndex = 11
-            dot.Parent = sf
-            addCorner(dot, 2)
-
             local sl = Instance.new("TextLabel")
             sl.BackgroundTransparency = 1
-            sl.Size = UDim2.new(1,-15,1,0)
-            sl.Position = UDim2.new(0,12,0,0)
-            sl.Font = Enum.Font.GothamBold
-            sl.Text = string.upper(c and c.Name or "SECTION")
-            sl.TextColor3 = T.TextSub
+            sl.Size = UDim2.new(1,0,1,0)
+            sl.Font = Enum.Font.Code
+            sl.Text = "── " .. (cfg4 and cfg4.Name or "SECTION"):upper() .. " " .. string.rep("─", 40)
+            sl.TextColor3 = T.AccentDim
             sl.TextSize = 10
             sl.TextXAlignment = Enum.TextXAlignment.Left
+            sl.TextTruncate = Enum.TextTruncate.AtEnd
             sl.ZIndex = 11
             sl.Parent = sf
+            glow(sl, T.AccentGlow, 0.85)
         end
 
-        -- LABEL
-        function tab:AddLabel(c)
-            local f = Card(32)
+        -- ── LABEL ──
+        function tab:AddLabel(cfg4)
+            local f = Card(28)
             local l = Instance.new("TextLabel")
             l.BackgroundTransparency = 1
-            l.Size = UDim2.new(1,-20,1,0)
-            l.Position = UDim2.new(0,10,0,0)
-            l.Font = Enum.Font.Gotham
-            l.Text = c and c.Text or "Label"
-            l.TextColor3 = T.TextSub
-            l.TextSize = 12
+            l.Size = UDim2.new(1,-16,1,0)
+            l.Position = UDim2.new(0,8,0,0)
+            l.Font = Enum.Font.Code
+            l.Text = ":: " .. (cfg4 and cfg4.Text or "label")
+            l.TextColor3 = T.TextDim
+            l.TextSize = 11
             l.TextXAlignment = Enum.TextXAlignment.Left
             l.ZIndex = 11
             l.Parent = f
-            return {Set = function(_, t) l.Text = t end}
+            glow(l, T.AccentGlow, 0.9)
+            return {Set = function(_,t) l.Text = ":: " .. t end}
         end
 
-        -- PARAGRAPH
-        function tab:AddParagraph(c)
-            c = c or {}
+        -- ── PARAGRAPH ──
+        function tab:AddParagraph(cfg4)
+            cfg4 = cfg4 or {}
             local f = Card(0)
             f.AutomaticSize = Enum.AutomaticSize.Y
-            addPadding(f, 12, 12, 14, 14)
-            local ly = addLayout(f, Enum.FillDirection.Vertical, 6)
+            pad(f, 10, 10, 10, 10)
+            lay(f, Enum.FillDirection.Vertical, 4)
 
             local tl = Instance.new("TextLabel")
             tl.BackgroundTransparency = 1
             tl.Size = UDim2.new(1,0,0,0)
             tl.AutomaticSize = Enum.AutomaticSize.Y
-            tl.Font = Enum.Font.GothamBold
-            tl.Text = c.Title or ""
-            tl.TextColor3 = T.Accent1
-            tl.TextSize = 14
+            tl.Font = Enum.Font.Code
+            tl.Text = "╔═ " .. (cfg4.Title or ""):upper() .. " ═╗"
+            tl.TextColor3 = T.Accent
+            tl.TextSize = 12
             tl.TextXAlignment = Enum.TextXAlignment.Left
             tl.TextWrapped = true
             tl.ZIndex = 11
             tl.Parent = f
+            glow(tl, T.AccentGlow, 0.7)
 
             local cl = Instance.new("TextLabel")
             cl.BackgroundTransparency = 1
             cl.Size = UDim2.new(1,0,0,0)
             cl.AutomaticSize = Enum.AutomaticSize.Y
-            cl.Font = Enum.Font.Gotham
-            cl.Text = c.Content or ""
-            cl.TextColor3 = T.TextSub
-            cl.TextSize = 11
+            cl.Font = Enum.Font.Code
+            cl.Text = "║ " .. (cfg4.Content or ""):gsub("\n", "\n║ ")
+            cl.TextColor3 = T.TextDim
+            cl.TextSize = 10
             cl.TextXAlignment = Enum.TextXAlignment.Left
             cl.TextWrapped = true
-            cl.LineHeight = 1.3
+            cl.LineHeight = 1.4
             cl.ZIndex = 11
             cl.Parent = f
         end
 
-        -- BUTTON
-        function tab:AddButton(c)
-            c = c or {}
-            local f = Card(42)
+        -- ── BUTTON ──
+        function tab:AddButton(cfg4)
+            cfg4 = cfg4 or {}
+            local f = Card(36)
             f.ClipsDescendants = true
+
+            local prefix = Instance.new("TextLabel")
+            prefix.BackgroundTransparency = 1
+            prefix.Size = UDim2.new(0,16,1,0)
+            prefix.Position = UDim2.new(0,8,0,0)
+            prefix.Font = Enum.Font.Code
+            prefix.Text = ">"
+            prefix.TextColor3 = T.Accent
+            prefix.TextSize = 13
+            prefix.ZIndex = 11
+            prefix.Parent = f
+            glow(prefix, T.AccentGlow, 0.6)
 
             local bl = Instance.new("TextLabel")
             bl.BackgroundTransparency = 1
-            bl.Size = UDim2.new(1,-50,1,0)
-            bl.Position = UDim2.new(0,14,0,0)
-            bl.Font = Enum.Font.GothamSemibold
-            bl.Text = c.Name or "Button"
+            bl.Size = UDim2.new(1,-60,1,0)
+            bl.Position = UDim2.new(0,26,0,0)
+            bl.Font = Enum.Font.Code
+            bl.Text = (cfg4.Name or "command"):lower():gsub(" ","_")
             bl.TextColor3 = T.Text
-            bl.TextSize = 13
+            bl.TextSize = 12
             bl.TextXAlignment = Enum.TextXAlignment.Left
             bl.ZIndex = 11
             bl.Parent = f
+            glow(bl, T.AccentGlow, 0.85)
 
-            -- Arrow circle
-            local arBg = Instance.new("Frame")
-            arBg.BackgroundColor3 = T.Accent1
-            arBg.BackgroundTransparency = 0.8
-            arBg.Size = UDim2.new(0,26,0,26)
-            arBg.Position = UDim2.new(1,-36,0.5,-13)
-            arBg.ZIndex = 11
-            arBg.Parent = f
-            addCorner(arBg, 7)
-
-            local ar = Instance.new("TextLabel")
-            ar.BackgroundTransparency = 1
-            ar.Size = UDim2.new(1,0,1,0)
-            ar.Font = Enum.Font.GothamBold
-            ar.Text = "→"
-            ar.TextColor3 = T.Accent1
-            ar.TextSize = 14
-            ar.ZIndex = 12
-            ar.Parent = arBg
+            local arrow = Instance.new("TextLabel")
+            arrow.BackgroundTransparency = 1
+            arrow.Size = UDim2.new(0,25,1,0)
+            arrow.Position = UDim2.new(1,-30,0,0)
+            arrow.Font = Enum.Font.Code
+            arrow.Text = "[→]"
+            arrow.TextColor3 = T.TextDark
+            arrow.TextSize = 10
+            arrow.ZIndex = 11
+            arrow.Parent = f
 
             local btn = Instance.new("TextButton")
             btn.BackgroundTransparency = 1
@@ -1050,74 +910,78 @@ function ZenithLib:Create(cfg)
             btn.Parent = f
 
             btn.MouseButton1Click:Connect(function()
-                rippleEffect(f, Mouse.X, Mouse.Y)
-                tw(arBg, {BackgroundTransparency = 0.3}, 0.1)
-                task.wait(0.15)
-                tw(arBg, {BackgroundTransparency = 0.8}, 0.2)
-                pcall(c.Callback or function() end)
+                -- Terminal flash effect
+                tw(f, {BackgroundColor3 = T.Accent, BackgroundTransparency = 0.6}, 0.05)
+                task.wait(0.08)
+                tw(f, {BackgroundColor3 = T.Card, BackgroundTransparency = 0.25}, 0.15)
+                pcall(cfg4.Callback or function() end)
             end)
 
             btn.MouseEnter:Connect(function()
-                tw(f, {BackgroundTransparency = 0.05}, 0.2)
-                tw(arBg, {BackgroundTransparency = 0.5, Size = UDim2.new(0,28,0,28), Position = UDim2.new(1,-37,0.5,-14)}, 0.2)
+                tw(f, {BackgroundTransparency = 0.1}, 0.15)
+                tw(prefix, {TextColor3 = T.TextBright}, 0.15)
+                tw(arrow, {TextColor3 = T.Accent}, 0.15)
+                prefix.Text = ">>"
             end)
             btn.MouseLeave:Connect(function()
-                tw(f, {BackgroundTransparency = 0.15}, 0.2)
-                tw(arBg, {BackgroundTransparency = 0.8, Size = UDim2.new(0,26,0,26), Position = UDim2.new(1,-36,0.5,-13)}, 0.2)
+                tw(f, {BackgroundTransparency = 0.25}, 0.15)
+                tw(prefix, {TextColor3 = T.Accent}, 0.15)
+                tw(arrow, {TextColor3 = T.TextDark}, 0.15)
+                prefix.Text = ">"
             end)
         end
 
-        -- TOGGLE
-        function tab:AddToggle(c)
-            c = c or {}
-            local name = c.Name or "Toggle"
-            local flag = c.Flag or name
-            local toggled = c.Default or false
-            local cb = c.Callback or function() end
+        -- ── TOGGLE ──
+        function tab:AddToggle(cfg4)
+            cfg4 = cfg4 or {}
+            local name = cfg4.Name or "toggle"
+            local flag = cfg4.Flag or name
+            local toggled = cfg4.Default or false
+            local cb = cfg4.Callback or function() end
             lib.Flags[flag] = toggled
 
-            local f = Card(42)
+            local f = Card(36)
 
-            local l = Instance.new("TextLabel")
-            l.BackgroundTransparency = 1
-            l.Size = UDim2.new(1,-70,1,0)
-            l.Position = UDim2.new(0,14,0,0)
-            l.Font = Enum.Font.GothamSemibold
-            l.Text = name
-            l.TextColor3 = T.Text
-            l.TextSize = 13
-            l.TextXAlignment = Enum.TextXAlignment.Left
-            l.ZIndex = 11
-            l.Parent = f
+            local bl = Instance.new("TextLabel")
+            bl.BackgroundTransparency = 1
+            bl.Size = UDim2.new(1,-90,1,0)
+            bl.Position = UDim2.new(0,10,0,0)
+            bl.Font = Enum.Font.Code
+            bl.Text = name:lower():gsub(" ","_")
+            bl.TextColor3 = T.Text
+            bl.TextSize = 12
+            bl.TextXAlignment = Enum.TextXAlignment.Left
+            bl.ZIndex = 11
+            bl.Parent = f
+            glow(bl, T.AccentGlow, 0.85)
 
-            local track = Instance.new("Frame")
-            track.BackgroundColor3 = T.Toggle
-            track.BorderSizePixel = 0
-            track.Size = UDim2.new(0,44,0,24)
-            track.Position = UDim2.new(1,-56,0.5,-12)
-            track.ZIndex = 11
-            track.Parent = f
-            addCorner(track, 12)
-            local tStroke = addStroke(track, T.Border, 1, 0.5)
+            -- [■ ON] / [□ OFF] label
+            local toggleLbl = Instance.new("TextLabel")
+            toggleLbl.BackgroundColor3 = T.Card
+            toggleLbl.BackgroundTransparency = 0.3
+            toggleLbl.Size = UDim2.new(0, 65, 0, 22)
+            toggleLbl.Position = UDim2.new(1, -75, 0.5, -11)
+            toggleLbl.Font = Enum.Font.Code
+            toggleLbl.TextSize = 11
+            toggleLbl.ZIndex = 12
+            toggleLbl.Parent = f
+            c(toggleLbl, 2)
 
-            local knob = Instance.new("Frame")
-            knob.BackgroundColor3 = T.TextSub
-            knob.BorderSizePixel = 0
-            knob.Size = UDim2.new(0,18,0,18)
-            knob.Position = UDim2.new(0,3,0.5,-9)
-            knob.ZIndex = 12
-            knob.Parent = track
-            addCorner(knob, 9)
+            local tStr = s(toggleLbl, T.Border, 1, 0.5)
 
             local function Upd()
                 if toggled then
-                    tw(track, {BackgroundColor3 = T.Accent1}, 0.25)
-                    tw(tStroke, {Color = T.Accent1, Transparency = 0.3}, 0.25)
-                    tw(knob, {Position = UDim2.new(1,-21,0.5,-9), BackgroundColor3 = Color3.new(1,1,1), Size = UDim2.new(0,18,0,18)}, 0.25, Enum.EasingStyle.Back)
+                    toggleLbl.Text = "[■ ON ]"
+                    toggleLbl.TextColor3 = T.Accent
+                    tw(tStr, {Color = T.Accent, Transparency = 0.3}, 0.2)
+                    tw(toggleLbl, {BackgroundTransparency = 0.6, BackgroundColor3 = T.Accent}, 0.2)
+                    glow(toggleLbl, T.AccentGlow, 0.55)
                 else
-                    tw(track, {BackgroundColor3 = T.Toggle}, 0.25)
-                    tw(tStroke, {Color = T.Border, Transparency = 0.5}, 0.25)
-                    tw(knob, {Position = UDim2.new(0,3,0.5,-9), BackgroundColor3 = T.TextSub, Size = UDim2.new(0,18,0,18)}, 0.25, Enum.EasingStyle.Back)
+                    toggleLbl.Text = "[□ OFF]"
+                    toggleLbl.TextColor3 = T.TextDark
+                    tw(tStr, {Color = T.Border, Transparency = 0.5}, 0.2)
+                    tw(toggleLbl, {BackgroundTransparency = 0.3, BackgroundColor3 = T.Card}, 0.2)
+                    toggleLbl.TextStrokeTransparency = 1
                 end
             end
 
@@ -1129,191 +993,184 @@ function ZenithLib:Create(cfg)
             btn.Parent = f
 
             btn.MouseButton1Click:Connect(function()
-                toggled = not toggled; lib.Flags[flag] = toggled; Upd(); pcall(cb, toggled)
+                toggled = not toggled; lib.Flags[flag]=toggled; Upd(); pcall(cb,toggled)
             end)
-            btn.MouseEnter:Connect(function() tw(f, {BackgroundTransparency = 0.05}, 0.15) end)
-            btn.MouseLeave:Connect(function() tw(f, {BackgroundTransparency = 0.15}, 0.15) end)
+            btn.MouseEnter:Connect(function() tw(f,{BackgroundTransparency=0.1},0.15) end)
+            btn.MouseLeave:Connect(function() tw(f,{BackgroundTransparency=0.25},0.15) end)
 
-            if toggled then Upd() end
-            return {Set = function(_,v) toggled=v; lib.Flags[flag]=v; Upd(); pcall(cb,v) end, Get = function() return toggled end}
+            Upd()
+            return {Set=function(_,v) toggled=v; lib.Flags[flag]=v; Upd(); pcall(cb,v) end, Get=function() return toggled end}
         end
 
-        -- SLIDER
-        function tab:AddSlider(c)
-            c = c or {}
-            local name = c.Name or "Slider"
-            local flag = c.Flag or name
-            local min,max = c.Min or 0, c.Max or 100
-            local val = math.clamp(c.Default or min, min, max)
-            local inc = c.Increment or 1
-            local suf = c.Suffix or ""
-            local cb = c.Callback or function() end
+        -- ── SLIDER ──
+        function tab:AddSlider(cfg4)
+            cfg4 = cfg4 or {}
+            local name = cfg4.Name or "slider"
+            local flag = cfg4.Flag or name
+            local min,max = cfg4.Min or 0, cfg4.Max or 100
+            local val = math.clamp(cfg4.Default or min, min, max)
+            local inc = cfg4.Increment or 1
+            local suf = cfg4.Suffix or ""
+            local cb = cfg4.Callback or function() end
             lib.Flags[flag] = val
 
-            local f = Card(56)
+            local f = Card(50)
 
-            local l = Instance.new("TextLabel")
-            l.BackgroundTransparency = 1
-            l.Size = UDim2.new(0.55,0,0,22)
-            l.Position = UDim2.new(0,14,0,4)
-            l.Font = Enum.Font.GothamSemibold
-            l.Text = name
-            l.TextColor3 = T.Text
-            l.TextSize = 13
-            l.TextXAlignment = Enum.TextXAlignment.Left
-            l.ZIndex = 11
-            l.Parent = f
+            -- Name + value on top
+            local nl2 = Instance.new("TextLabel")
+            nl2.BackgroundTransparency = 1
+            nl2.Size = UDim2.new(0.6,0,0,18)
+            nl2.Position = UDim2.new(0,10,0,4)
+            nl2.Font = Enum.Font.Code
+            nl2.Text = name:lower():gsub(" ","_")
+            nl2.TextColor3 = T.Text
+            nl2.TextSize = 11
+            nl2.TextXAlignment = Enum.TextXAlignment.Left
+            nl2.ZIndex = 11
+            nl2.Parent = f
+            glow(nl2, T.AccentGlow, 0.85)
 
-            -- Value pill
-            local vPill = Instance.new("Frame")
-            vPill.BackgroundColor3 = T.Accent1
-            vPill.BackgroundTransparency = 0.8
-            vPill.Size = UDim2.new(0, 55, 0, 20)
-            vPill.Position = UDim2.new(1, -65, 0, 5)
-            vPill.ZIndex = 11
-            vPill.Parent = f
-            addCorner(vPill, 6)
-
+            -- Value display
             local vl = Instance.new("TextLabel")
-            vl.BackgroundTransparency = 1
-            vl.Size = UDim2.new(1,0,1,0)
-            vl.Font = Enum.Font.GothamBold
-            vl.Text = tostring(val)..suf
-            vl.TextColor3 = T.Accent1
-            vl.TextSize = 11
+            vl.BackgroundColor3 = T.Card
+            vl.BackgroundTransparency = 0.3
+            vl.Size = UDim2.new(0, 55, 0, 18)
+            vl.Position = UDim2.new(1, -65, 0, 4)
+            vl.Font = Enum.Font.Code
+            vl.Text = "["..tostring(val)..suf.."]"
+            vl.TextColor3 = T.Accent
+            vl.TextSize = 10
             vl.ZIndex = 12
-            vl.Parent = vPill
+            vl.Parent = f
+            c(vl, 2)
+            s(vl, T.Accent, 1, 0.6)
+            glow(vl, T.AccentGlow, 0.65)
 
-            -- Track
+            -- Track (retro style - thin line)
             local bg = Instance.new("Frame")
-            bg.BackgroundColor3 = T.Slider
+            bg.BackgroundColor3 = T.Border
             bg.BorderSizePixel = 0
-            bg.Size = UDim2.new(1,-28,0,6)
-            bg.Position = UDim2.new(0,14,0,38)
+            bg.Size = UDim2.new(1,-20,0,4)
+            bg.Position = UDim2.new(0,10,0,34)
             bg.ZIndex = 11
             bg.Parent = f
-            addCorner(bg, 3)
+            c(bg, 1)
 
             local pct = (val-min)/(max-min)
             local fill = Instance.new("Frame")
-            fill.BackgroundColor3 = T.Accent1
+            fill.BackgroundColor3 = T.Accent
             fill.BorderSizePixel = 0
             fill.Size = UDim2.new(pct,0,1,0)
             fill.ZIndex = 12
             fill.Parent = bg
-            addCorner(fill, 3)
-            addGradient(fill, T.Accent1, T.Accent2, 0)
+            c(fill, 1)
 
-            -- Glow knob
-            local sk = Instance.new("Frame")
-            sk.BackgroundColor3 = Color3.new(1,1,1)
-            sk.BorderSizePixel = 0
-            sk.Size = UDim2.new(0,16,0,16)
-            sk.AnchorPoint = Vector2.new(0.5,0.5)
-            sk.Position = UDim2.new(pct,0,0.5,0)
-            sk.ZIndex = 14
-            sk.Parent = bg
-            addCorner(sk, 8)
-            addStroke(sk, T.Accent1, 2, 0.2)
+            -- Cursor (thin vertical bar instead of circle knob)
+            local cursor = Instance.new("Frame")
+            cursor.BackgroundColor3 = T.TextBright
+            cursor.BorderSizePixel = 0
+            cursor.Size = UDim2.new(0,2,0,14)
+            cursor.AnchorPoint = Vector2.new(0.5,0.5)
+            cursor.Position = UDim2.new(pct,0,0.5,0)
+            cursor.ZIndex = 14
+            cursor.Parent = bg
+
+            -- Glow on cursor
+            local cGlow = Instance.new("Frame")
+            cGlow.BackgroundColor3 = T.Accent
+            cGlow.BackgroundTransparency = 0.6
+            cGlow.BorderSizePixel = 0
+            cGlow.Size = UDim2.new(0,6,0,14)
+            cGlow.AnchorPoint = Vector2.new(0.5,0.5)
+            cGlow.Position = UDim2.new(pct,0,0.5,0)
+            cGlow.ZIndex = 13
+            cGlow.Parent = bg
 
             local sliding = false
-
             local function UpdSlider(input)
-                local rel = math.clamp((input.Position.X - bg.AbsolutePosition.X)/bg.AbsoluteSize.X, 0, 1)
+                local rel = math.clamp((input.Position.X-bg.AbsolutePosition.X)/bg.AbsoluteSize.X,0,1)
                 val = math.clamp(math.floor((min+(max-min)*rel)/inc+0.5)*inc, min, max)
                 local p = (val-min)/(max-min)
-                tw(fill, {Size = UDim2.new(p,0,1,0)}, 0.05)
-                tw(sk, {Position = UDim2.new(p,0,0.5,0)}, 0.05)
-                vl.Text = tostring(val)..suf
-                lib.Flags[flag] = val
-                pcall(cb, val)
+                tw(fill,{Size=UDim2.new(p,0,1,0)},0.04)
+                tw(cursor,{Position=UDim2.new(p,0,0.5,0)},0.04)
+                tw(cGlow,{Position=UDim2.new(p,0,0.5,0)},0.04)
+                vl.Text = "["..tostring(val)..suf.."]"
+                lib.Flags[flag]=val; pcall(cb,val)
             end
 
             local ib = Instance.new("TextButton")
-            ib.BackgroundTransparency = 1
-            ib.Size = UDim2.new(1,0,0,24)
-            ib.Position = UDim2.new(0,0,0,28)
-            ib.Text = ""
-            ib.ZIndex = 16
-            ib.Parent = f
+            ib.BackgroundTransparency=1; ib.Size=UDim2.new(1,0,0,22); ib.Position=UDim2.new(0,0,0,24)
+            ib.Text=""; ib.ZIndex=16; ib.Parent=f
 
-            ib.InputBegan:Connect(function(i)
-                if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
-                    sliding = true; UpdSlider(i)
-                    tw(sk, {Size = UDim2.new(0,20,0,20)}, 0.15, Enum.EasingStyle.Back)
-                end
-            end)
-            ib.InputEnded:Connect(function(i)
-                if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
-                    sliding = false
-                    tw(sk, {Size = UDim2.new(0,16,0,16)}, 0.15)
-                end
-            end)
+            ib.InputBegan:Connect(function(i) if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then sliding=true; UpdSlider(i); tw(cursor,{Size=UDim2.new(0,3,0,18)},0.1) end end)
+            ib.InputEnded:Connect(function(i) if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then sliding=false; tw(cursor,{Size=UDim2.new(0,2,0,14)},0.1) end end)
             UIS.InputChanged:Connect(function(i) if sliding and (i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch) then UpdSlider(i) end end)
 
             return {
-                Set = function(_,v2) val=math.clamp(v2,min,max); local p=(val-min)/(max-min); tw(fill,{Size=UDim2.new(p,0,1,0)},0.2); tw(sk,{Position=UDim2.new(p,0,0.5,0)},0.2); vl.Text=tostring(val)..suf; lib.Flags[flag]=val; pcall(cb,val) end,
-                Get = function() return val end
+                Set=function(_,v2) val=math.clamp(v2,min,max); local p=(val-min)/(max-min); tw(fill,{Size=UDim2.new(p,0,1,0)},0.2); tw(cursor,{Position=UDim2.new(p,0,0.5,0)},0.2); tw(cGlow,{Position=UDim2.new(p,0,0.5,0)},0.2); vl.Text="["..tostring(val)..suf.."]"; lib.Flags[flag]=val; pcall(cb,val) end,
+                Get=function() return val end
             }
         end
 
-        -- DROPDOWN
-        function tab:AddDropdown(c)
-            c = c or {}
-            local name = c.Name or "Dropdown"
-            local flag = c.Flag or name
-            local opts = c.Options or {}
-            local multi = c.Multi or false
-            local sel = multi and {} or (c.Default or opts[1] or "")
-            local cb = c.Callback or function() end
+        -- ── DROPDOWN ──
+        function tab:AddDropdown(cfg4)
+            cfg4 = cfg4 or {}
+            local name = cfg4.Name or "dropdown"
+            local flag = cfg4.Flag or name
+            local opts = cfg4.Options or {}
+            local multi = cfg4.Multi or false
+            local sel = multi and {} or (cfg4.Default or opts[1] or "")
+            local cb = cfg4.Callback or function() end
             local opened = false
 
-            if multi and type(c.Default)=="table" then for _,v in ipairs(c.Default) do sel[v]=true end end
+            if multi and type(cfg4.Default)=="table" then for _,v in ipairs(cfg4.Default) do sel[v]=true end end
             lib.Flags[flag] = sel
 
-            local f = Card(42)
+            local f = Card(36)
             f.ClipsDescendants = true
-
-            local l = Instance.new("TextLabel")
-            l.BackgroundTransparency = 1
-            l.Size = UDim2.new(0.4,-10,0,42)
-            l.Position = UDim2.new(0,14,0,0)
-            l.Font = Enum.Font.GothamSemibold
-            l.Text = name
-            l.TextColor3 = T.Text
-            l.TextSize = 13
-            l.TextXAlignment = Enum.TextXAlignment.Left
-            l.ZIndex = 11
-            l.Parent = f
 
             local function GetTxt()
                 if multi then
-                    local it = {}; for k,v in pairs(sel) do if v then table.insert(it,k) end end
-                    return #it>0 and table.concat(it,", ") or "None"
+                    local it={}; for k,v in pairs(sel) do if v then table.insert(it,k) end end
+                    return #it>0 and table.concat(it,"|") or "none"
                 end
-                return tostring(sel)
+                return tostring(sel):lower()
             end
 
-            local sl = Instance.new("TextLabel")
-            sl.BackgroundTransparency = 1
-            sl.Size = UDim2.new(0.5,-10,0,42)
-            sl.Position = UDim2.new(0.4,0,0,0)
-            sl.Font = Enum.Font.Gotham
-            sl.Text = GetTxt()
-            sl.TextColor3 = T.Accent1
-            sl.TextSize = 11
-            sl.TextXAlignment = Enum.TextXAlignment.Right
-            sl.TextTruncate = Enum.TextTruncate.AtEnd
-            sl.ZIndex = 11
-            sl.Parent = f
+            local nl2 = Instance.new("TextLabel")
+            nl2.BackgroundTransparency = 1
+            nl2.Size = UDim2.new(0.4,0,0,36)
+            nl2.Position = UDim2.new(0,10,0,0)
+            nl2.Font = Enum.Font.Code
+            nl2.Text = name:lower():gsub(" ","_")
+            nl2.TextColor3 = T.Text
+            nl2.TextSize = 11
+            nl2.TextXAlignment = Enum.TextXAlignment.Left
+            nl2.ZIndex = 11
+            nl2.Parent = f
+            glow(nl2, T.AccentGlow, 0.85)
+
+            local selLbl = Instance.new("TextLabel")
+            selLbl.BackgroundTransparency = 1
+            selLbl.Size = UDim2.new(0.5,-10,0,36)
+            selLbl.Position = UDim2.new(0.4,0,0,0)
+            selLbl.Font = Enum.Font.Code
+            selLbl.Text = "[" .. GetTxt() .. "]"
+            selLbl.TextColor3 = T.Accent
+            selLbl.TextSize = 10
+            selLbl.TextXAlignment = Enum.TextXAlignment.Right
+            selLbl.TextTruncate = Enum.TextTruncate.AtEnd
+            selLbl.ZIndex = 11
+            selLbl.Parent = f
+            glow(selLbl, T.AccentGlow, 0.7)
 
             local arw = Instance.new("TextLabel")
             arw.BackgroundTransparency = 1
-            arw.Size = UDim2.new(0,20,0,42)
-            arw.Position = UDim2.new(1,-25,0,0)
-            arw.Font = Enum.Font.GothamBold
+            arw.Size = UDim2.new(0,18,0,36)
+            arw.Position = UDim2.new(1,-22,0,0)
+            arw.Font = Enum.Font.Code
             arw.Text = "▾"
-            arw.TextColor3 = T.TextMuted
+            arw.TextColor3 = T.TextDark
             arw.TextSize = 12
             arw.ZIndex = 11
             arw.Rotation = 0
@@ -1321,238 +1178,263 @@ function ZenithLib:Create(cfg)
 
             local oc = Instance.new("Frame")
             oc.BackgroundTransparency = 1
-            oc.Size = UDim2.new(1,-20,0,0)
-            oc.Position = UDim2.new(0,10,0,44)
+            oc.Size = UDim2.new(1,-16,0,0)
+            oc.Position = UDim2.new(0,8,0,38)
             oc.ClipsDescendants = true
             oc.ZIndex = 11
             oc.Parent = f
-            addLayout(oc, Enum.FillDirection.Vertical, 3)
+            lay(oc, Enum.FillDirection.Vertical, 2)
 
             local optBtns = {}
             local function Build()
-                for _,b in pairs(optBtns) do b:Destroy() end; optBtns = {}
+                for _,b in pairs(optBtns) do b:Destroy() end; optBtns={}
                 for _,opt in ipairs(opts) do
                     local ob = Instance.new("TextButton")
-                    ob.BackgroundColor3 = T.Elevated
+                    ob.BackgroundColor3 = T.Surface
                     ob.BackgroundTransparency = 0.4
-                    ob.Size = UDim2.new(1,0,0,30)
-                    ob.Font = Enum.Font.Gotham
-                    ob.Text = "  "..opt
-                    ob.TextColor3 = T.TextSub
-                    ob.TextSize = 12
+                    ob.Size = UDim2.new(1,0,0,24)
+                    ob.Font = Enum.Font.Code
+                    ob.Text = "  " .. opt:lower()
+                    ob.TextColor3 = T.TextDim
+                    ob.TextSize = 11
                     ob.TextXAlignment = Enum.TextXAlignment.Left
                     ob.BorderSizePixel = 0
                     ob.AutoButtonColor = false
                     ob.ZIndex = 12
                     ob.Parent = oc
-                    addCorner(ob, 7)
+                    c(ob, 2)
 
                     local isSel = multi and sel[opt] or (sel==opt)
-                    if isSel then ob.TextColor3 = T.Accent1; ob.BackgroundTransparency = 0.15 end
+                    if isSel then
+                        ob.Text = "► " .. opt:lower()
+                        ob.TextColor3 = T.Accent
+                        glow(ob, T.AccentGlow, 0.7)
+                        ob.BackgroundTransparency = 0.15
+                    end
 
                     ob.MouseButton1Click:Connect(function()
                         if multi then
                             sel[opt] = not sel[opt]
-                            tw(ob, {TextColor3 = sel[opt] and T.Accent1 or T.TextSub, BackgroundTransparency = sel[opt] and 0.15 or 0.4}, 0.15)
+                            if sel[opt] then
+                                ob.Text = "► " .. opt:lower()
+                                tw(ob,{TextColor3=T.Accent,BackgroundTransparency=0.15},0.15)
+                                glow(ob, T.AccentGlow, 0.7)
+                            else
+                                ob.Text = "  " .. opt:lower()
+                                tw(ob,{TextColor3=T.TextDim,BackgroundTransparency=0.4},0.15)
+                                ob.TextStrokeTransparency = 1
+                            end
                         else
                             sel = opt
-                            for _,b in pairs(optBtns) do tw(b, {TextColor3 = T.TextSub, BackgroundTransparency = 0.4}, 0.15) end
-                            tw(ob, {TextColor3 = T.Accent1, BackgroundTransparency = 0.15}, 0.15)
+                            for _,b in pairs(optBtns) do
+                                b.Text = "  " .. b.Name
+                                tw(b,{TextColor3=T.TextDim,BackgroundTransparency=0.4},0.15)
+                                b.TextStrokeTransparency = 1
+                            end
+                            ob.Text = "► " .. opt:lower()
+                            tw(ob,{TextColor3=T.Accent,BackgroundTransparency=0.15},0.15)
+                            glow(ob, T.AccentGlow, 0.7)
                         end
-                        sl.Text = GetTxt(); lib.Flags[flag] = sel; pcall(cb, sel)
+                        selLbl.Text = "[" .. GetTxt() .. "]"
+                        lib.Flags[flag]=sel; pcall(cb,sel)
                     end)
-                    ob.MouseEnter:Connect(function() tw(ob, {BackgroundTransparency = 0.15}, 0.1) end)
-                    ob.MouseLeave:Connect(function() local is=multi and sel[opt] or sel==opt; if not is then tw(ob, {BackgroundTransparency = 0.4}, 0.1) end end)
+
+                    ob.Name = opt:lower()
+                    ob.MouseEnter:Connect(function() tw(ob,{BackgroundTransparency=0.1},0.1) end)
+                    ob.MouseLeave:Connect(function() local is=multi and sel[opt] or sel==opt; if not is then tw(ob,{BackgroundTransparency=0.4},0.1) end end)
                     table.insert(optBtns, ob)
                 end
             end
             Build()
 
             local hb = Instance.new("TextButton")
-            hb.BackgroundTransparency = 1; hb.Size = UDim2.new(1,0,0,42); hb.Text = ""; hb.ZIndex = 16; hb.Parent = f
+            hb.BackgroundTransparency=1; hb.Size=UDim2.new(1,0,0,36); hb.Text=""; hb.ZIndex=16; hb.Parent=f
 
             hb.MouseButton1Click:Connect(function()
                 opened = not opened
                 if opened then
-                    local th = #opts * 33 + 4
-                    tw(f, {Size = UDim2.new(1,0,0,42+th+8)}, 0.3, Enum.EasingStyle.Quint)
-                    tw(oc, {Size = UDim2.new(1,-20,0,th)}, 0.3, Enum.EasingStyle.Quint)
-                    tw(arw, {Rotation = 180}, 0.3)
+                    local th = #opts * 26 + 4
+                    tw(f,{Size=UDim2.new(1,0,0,36+th+6)},0.25,Enum.EasingStyle.Quint)
+                    tw(oc,{Size=UDim2.new(1,-16,0,th)},0.25,Enum.EasingStyle.Quint)
+                    tw(arw,{Rotation=180},0.25)
                 else
-                    tw(f, {Size = UDim2.new(1,0,0,42)}, 0.3, Enum.EasingStyle.Quint)
-                    tw(oc, {Size = UDim2.new(1,-20,0,0)}, 0.3, Enum.EasingStyle.Quint)
-                    tw(arw, {Rotation = 0}, 0.3)
+                    tw(f,{Size=UDim2.new(1,0,0,36)},0.25,Enum.EasingStyle.Quint)
+                    tw(oc,{Size=UDim2.new(1,-16,0,0)},0.25,Enum.EasingStyle.Quint)
+                    tw(arw,{Rotation=0},0.25)
                 end
             end)
 
-            return {Set = function(_,v) sel=v; sl.Text=GetTxt(); lib.Flags[flag]=sel; pcall(cb,sel) end, Refresh = function(_,no) opts=no; Build() end, Get = function() return sel end}
+            return {Set=function(_,v) sel=v; selLbl.Text="["..GetTxt().."]"; lib.Flags[flag]=sel; pcall(cb,sel) end, Refresh=function(_,no) opts=no; Build() end, Get=function() return sel end}
         end
 
-        -- TEXTBOX
-        function tab:AddTextbox(c)
-            c = c or {}
-            local name = c.Name or "Input"
-            local flag = c.Flag or name
-            local def = c.Default or ""
-            local cb = c.Callback or function() end
+        -- ── TEXTBOX ──
+        function tab:AddTextbox(cfg4)
+            cfg4 = cfg4 or {}
+            local name = cfg4.Name or "input"
+            local flag = cfg4.Flag or name
+            local def = cfg4.Default or ""
+            local cb = cfg4.Callback or function() end
             lib.Flags[flag] = def
 
-            local f = Card(42)
+            local f = Card(36)
 
-            local l = Instance.new("TextLabel")
-            l.BackgroundTransparency = 1
-            l.Size = UDim2.new(0.38,0,1,0)
-            l.Position = UDim2.new(0,14,0,0)
-            l.Font = Enum.Font.GothamSemibold
-            l.Text = name
-            l.TextColor3 = T.Text
-            l.TextSize = 13
-            l.TextXAlignment = Enum.TextXAlignment.Left
-            l.ZIndex = 11
-            l.Parent = f
+            local nl2 = Instance.new("TextLabel")
+            nl2.BackgroundTransparency = 1
+            nl2.Size = UDim2.new(0.35,0,1,0)
+            nl2.Position = UDim2.new(0,10,0,0)
+            nl2.Font = Enum.Font.Code
+            nl2.Text = "$ " .. name:lower():gsub(" ","_")
+            nl2.TextColor3 = T.Text
+            nl2.TextSize = 11
+            nl2.TextXAlignment = Enum.TextXAlignment.Left
+            nl2.ZIndex = 11
+            nl2.Parent = f
+            glow(nl2, T.AccentGlow, 0.85)
 
             local ibg = Instance.new("Frame")
-            ibg.BackgroundColor3 = T.Input
+            ibg.BackgroundColor3 = T.Bg
             ibg.BorderSizePixel = 0
-            ibg.Size = UDim2.new(0.55,0,0,28)
-            ibg.Position = UDim2.new(0.42,0,0.5,-14)
+            ibg.Size = UDim2.new(0.58,0,0,24)
+            ibg.Position = UDim2.new(0.4,0,0.5,-12)
             ibg.ZIndex = 11
             ibg.Parent = f
-            addCorner(ibg, 8)
-            local iStr = addStroke(ibg, T.Border, 1, 0.5)
+            c(ibg, 2)
+            local iStr = s(ibg, T.Border, 1, 0.5)
 
             local tb = Instance.new("TextBox")
             tb.BackgroundTransparency = 1
-            tb.Size = UDim2.new(1,-14,1,0)
-            tb.Position = UDim2.new(0,7,0,0)
-            tb.Font = Enum.Font.Gotham
+            tb.Size = UDim2.new(1,-10,1,0)
+            tb.Position = UDim2.new(0,5,0,0)
+            tb.Font = Enum.Font.Code
             tb.Text = def
-            tb.PlaceholderText = c.Placeholder or "Type..."
-            tb.PlaceholderColor3 = T.TextMuted
-            tb.TextColor3 = T.Text
-            tb.TextSize = 12
+            tb.PlaceholderText = cfg4.Placeholder or "type_here..."
+            tb.PlaceholderColor3 = T.TextDark
+            tb.TextColor3 = T.Accent
+            tb.TextSize = 11
             tb.TextXAlignment = Enum.TextXAlignment.Left
             tb.ClearTextOnFocus = false
             tb.ZIndex = 12
             tb.Parent = ibg
+            glow(tb, T.AccentGlow, 0.7)
 
-            tb.Focused:Connect(function() tw(iStr, {Color = T.Accent1, Transparency = 0.2}, 0.2) end)
-            tb.FocusLost:Connect(function(ep) tw(iStr, {Color = T.Border, Transparency = 0.5}, 0.2); lib.Flags[flag]=tb.Text; pcall(cb, tb.Text, ep) end)
+            tb.Focused:Connect(function() tw(iStr,{Color=T.Accent,Transparency=0.2},0.2) end)
+            tb.FocusLost:Connect(function(ep) tw(iStr,{Color=T.Border,Transparency=0.5},0.2); lib.Flags[flag]=tb.Text; pcall(cb,tb.Text,ep) end)
 
-            return {Set = function(_,v) tb.Text = v; lib.Flags[flag]=v end, Get = function() return tb.Text end}
+            return {Set=function(_,v) tb.Text=v; lib.Flags[flag]=v end, Get=function() return tb.Text end}
         end
 
-        -- KEYBIND
-        function tab:AddKeybind(c)
-            c = c or {}
-            local name = c.Name or "Keybind"
-            local flag = c.Flag or name
-            local key = c.Default or Enum.KeyCode.Unknown
-            local cb = c.Callback or function() end
+        -- ── KEYBIND ──
+        function tab:AddKeybind(cfg4)
+            cfg4 = cfg4 or {}
+            local name = cfg4.Name or "keybind"
+            local flag = cfg4.Flag or name
+            local key = cfg4.Default or Enum.KeyCode.Unknown
+            local cb = cfg4.Callback or function() end
             local listening = false
             lib.Flags[flag] = key
 
-            local f = Card(42)
+            local f = Card(36)
 
-            local l = Instance.new("TextLabel")
-            l.BackgroundTransparency = 1
-            l.Size = UDim2.new(0.6,0,1,0)
-            l.Position = UDim2.new(0,14,0,0)
-            l.Font = Enum.Font.GothamSemibold
-            l.Text = name
-            l.TextColor3 = T.Text
-            l.TextSize = 13
-            l.TextXAlignment = Enum.TextXAlignment.Left
-            l.ZIndex = 11
-            l.Parent = f
+            local nl2 = Instance.new("TextLabel")
+            nl2.BackgroundTransparency = 1
+            nl2.Size = UDim2.new(0.6,0,1,0)
+            nl2.Position = UDim2.new(0,10,0,0)
+            nl2.Font = Enum.Font.Code
+            nl2.Text = name:lower():gsub(" ","_")
+            nl2.TextColor3 = T.Text
+            nl2.TextSize = 11
+            nl2.TextXAlignment = Enum.TextXAlignment.Left
+            nl2.ZIndex = 11
+            nl2.Parent = f
+            glow(nl2, T.AccentGlow, 0.85)
 
             local kb = Instance.new("TextButton")
-            kb.BackgroundColor3 = T.Input
-            kb.Size = UDim2.new(0,70,0,26)
-            kb.Position = UDim2.new(1,-80,0.5,-13)
-            kb.Font = Enum.Font.GothamBold
-            kb.Text = key.Name or "None"
-            kb.TextColor3 = T.Accent1
-            kb.TextSize = 11
+            kb.BackgroundColor3 = T.Bg
+            kb.Size = UDim2.new(0,65,0,22)
+            kb.Position = UDim2.new(1,-75,0.5,-11)
+            kb.Font = Enum.Font.Code
+            kb.Text = "[" .. (key.Name or "?") .. "]"
+            kb.TextColor3 = T.Accent
+            kb.TextSize = 10
             kb.BorderSizePixel = 0
             kb.AutoButtonColor = false
             kb.ZIndex = 12
             kb.Parent = f
-            addCorner(kb, 7)
-            local kStr = addStroke(kb, T.Border, 1, 0.5)
+            c(kb, 2)
+            local kStr = s(kb, T.Border, 1, 0.5)
+            glow(kb, T.AccentGlow, 0.65)
 
             kb.MouseButton1Click:Connect(function()
-                listening = true; kb.Text = "···"
-                tw(kStr, {Color = T.Accent1, Transparency = 0.2}, 0.2)
-                tw(kb, {BackgroundColor3 = T.Accent1, TextColor3 = Color3.new(1,1,1)}, 0.2)
+                listening = true; kb.Text = "[···]"
+                tw(kStr,{Color=T.Accent,Transparency=0.2},0.2)
             end)
 
             UIS.InputBegan:Connect(function(i,g)
                 if listening and i.UserInputType==Enum.UserInputType.Keyboard then
-                    key = i.KeyCode; kb.Text = key.Name; lib.Flags[flag]=key; listening = false
-                    tw(kStr, {Color = T.Border, Transparency = 0.5}, 0.2)
-                    tw(kb, {BackgroundColor3 = T.Input, TextColor3 = T.Accent1}, 0.2)
-                elseif not g and not listening and i.KeyCode == key then pcall(cb) end
+                    key=i.KeyCode; kb.Text="["..key.Name.."]"; lib.Flags[flag]=key; listening=false
+                    tw(kStr,{Color=T.Border,Transparency=0.5},0.2)
+                elseif not g and not listening and i.KeyCode==key then pcall(cb) end
             end)
         end
 
-        -- COLOR PICKER
-        function tab:AddColorPicker(c)
-            c = c or {}
-            local name = c.Name or "Color"
-            local flag = c.Flag or name
-            local col = c.Default or Color3.new(1,1,1)
-            local cb = c.Callback or function() end
+        -- ── COLOR PICKER ──
+        function tab:AddColorPicker(cfg4)
+            cfg4 = cfg4 or {}
+            local name = cfg4.Name or "color"
+            local flag = cfg4.Flag or name
+            local col = cfg4.Default or Color3.new(1,0,0)
+            local cb = cfg4.Callback or function() end
             local op = false
             lib.Flags[flag] = col
-            local h,s,v = col:ToHSV()
+            local h2,s2,v2 = col:ToHSV()
 
-            local f = Card(42)
+            local f = Card(36)
             f.ClipsDescendants = true
 
-            local l = Instance.new("TextLabel")
-            l.BackgroundTransparency = 1
-            l.Size = UDim2.new(1,-55,0,42)
-            l.Position = UDim2.new(0,14,0,0)
-            l.Font = Enum.Font.GothamSemibold
-            l.Text = name
-            l.TextColor3 = T.Text
-            l.TextSize = 13
-            l.TextXAlignment = Enum.TextXAlignment.Left
-            l.ZIndex = 11
-            l.Parent = f
+            local nl2 = Instance.new("TextLabel")
+            nl2.BackgroundTransparency = 1
+            nl2.Size = UDim2.new(1,-55,0,36)
+            nl2.Position = UDim2.new(0,10,0,0)
+            nl2.Font = Enum.Font.Code
+            nl2.Text = name:lower():gsub(" ","_")
+            nl2.TextColor3 = T.Text
+            nl2.TextSize = 11
+            nl2.TextXAlignment = Enum.TextXAlignment.Left
+            nl2.ZIndex = 11
+            nl2.Parent = f
+            glow(nl2, T.AccentGlow, 0.85)
 
-            local cp = Instance.new("Frame")
-            cp.BackgroundColor3 = col
-            cp.Size = UDim2.new(0,26,0,26)
-            cp.Position = UDim2.new(1,-38,0.5,-13)
-            cp.ZIndex = 12
-            cp.Parent = f
-            addCorner(cp, 7)
-            addStroke(cp, Color3.new(1,1,1), 1, 0.7)
+            local cpv = Instance.new("Frame")
+            cpv.BackgroundColor3 = col
+            cpv.Size = UDim2.new(0,24,0,18)
+            cpv.Position = UDim2.new(1,-34,0.5,-9)
+            cpv.ZIndex = 12
+            cpv.Parent = f
+            c(cpv, 2)
+            s(cpv, Color3.new(1,1,1), 1, 0.7)
 
             local pa = Instance.new("Frame")
             pa.BackgroundTransparency = 1
-            pa.Size = UDim2.new(1,-24,0,0)
-            pa.Position = UDim2.new(0,12,0,46)
+            pa.Size = UDim2.new(1,-20,0,0)
+            pa.Position = UDim2.new(0,10,0,40)
             pa.ClipsDescendants = true
             pa.ZIndex = 12
             pa.Parent = f
 
-            local function MakeBar(yP, gc)
+            local function MkBar(yP, gc)
                 local bar = Instance.new("Frame")
                 bar.BackgroundColor3 = Color3.new(1,1,1)
-                bar.Size = UDim2.new(1,0,0,14)
+                bar.Size = UDim2.new(1,0,0,12)
                 bar.Position = UDim2.new(0,0,0,yP)
                 bar.ZIndex = 13
                 bar.Parent = pa
-                addCorner(bar, 4)
-                local g = Instance.new("UIGradient"); g.Color = gc; g.Parent = bar
+                c(bar, 2)
+                local g = Instance.new("UIGradient"); g.Color=gc; g.Parent=bar
                 local b = Instance.new("TextButton"); b.BackgroundTransparency=1; b.Size=UDim2.new(1,0,1,0); b.Text=""; b.ZIndex=15; b.Parent=bar
-                return bar, g, b
+                return bar,g,b
             end
 
-            local hB,hG,hBtn = MakeBar(0, ColorSequence.new({
+            local hB,hG,hBtn = MkBar(0, ColorSequence.new({
                 ColorSequenceKeypoint.new(0,Color3.fromHSV(0,1,1)),
                 ColorSequenceKeypoint.new(0.17,Color3.fromHSV(0.17,1,1)),
                 ColorSequenceKeypoint.new(0.33,Color3.fromHSV(0.33,1,1)),
@@ -1561,13 +1443,13 @@ function ZenithLib:Create(cfg)
                 ColorSequenceKeypoint.new(0.83,Color3.fromHSV(0.83,1,1)),
                 ColorSequenceKeypoint.new(1,Color3.fromHSV(1,1,1)),
             }))
-            local sB,sG,sBtn = MakeBar(18, ColorSequence.new(Color3.new(1,1,1),Color3.fromHSV(h,1,1)))
-            local vB,vG,vBtn = MakeBar(36, ColorSequence.new(Color3.new(0,0,0),Color3.fromHSV(h,s,1)))
+            local sB,sG,sBtn = MkBar(16, ColorSequence.new(Color3.new(1,1,1),Color3.fromHSV(h2,1,1)))
+            local vB,vG,vBtn = MkBar(32, ColorSequence.new(Color3.new(0,0,0),Color3.fromHSV(h2,s2,1)))
 
             local function UC()
-                col = Color3.fromHSV(h,s,v); cp.BackgroundColor3 = col
-                sG.Color = ColorSequence.new(Color3.new(1,1,1),Color3.fromHSV(h,1,1))
-                vG.Color = ColorSequence.new(Color3.new(0,0,0),Color3.fromHSV(h,s,1))
+                col=Color3.fromHSV(h2,s2,v2); cpv.BackgroundColor3=col
+                sG.Color=ColorSequence.new(Color3.new(1,1,1),Color3.fromHSV(h2,1,1))
+                vG.Color=ColorSequence.new(Color3.new(0,0,0),Color3.fromHSV(h2,s2,1))
                 lib.Flags[flag]=col; pcall(cb,col)
             end
 
@@ -1581,21 +1463,21 @@ function ZenithLib:Create(cfg)
 
             UIS.InputChanged:Connect(function(i)
                 if i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch then
-                    if hd then h=math.clamp((i.Position.X-hB.AbsolutePosition.X)/hB.AbsoluteSize.X,0,1); UC() end
-                    if sd then s=math.clamp((i.Position.X-sB.AbsolutePosition.X)/sB.AbsoluteSize.X,0,1); UC() end
-                    if vd then v=math.clamp((i.Position.X-vB.AbsolutePosition.X)/vB.AbsoluteSize.X,0,1); UC() end
+                    if hd then h2=math.clamp((i.Position.X-hB.AbsolutePosition.X)/hB.AbsoluteSize.X,0,1); UC() end
+                    if sd then s2=math.clamp((i.Position.X-sB.AbsolutePosition.X)/sB.AbsoluteSize.X,0,1); UC() end
+                    if vd then v2=math.clamp((i.Position.X-vB.AbsolutePosition.X)/vB.AbsoluteSize.X,0,1); UC() end
                 end
             end)
 
-            local cpb = Instance.new("TextButton"); cpb.BackgroundTransparency=1; cpb.Size=UDim2.new(1,0,0,42); cpb.Text=""; cpb.ZIndex=16; cpb.Parent=f
+            local cpb = Instance.new("TextButton"); cpb.BackgroundTransparency=1; cpb.Size=UDim2.new(1,0,0,36); cpb.Text=""; cpb.ZIndex=16; cpb.Parent=f
             cpb.MouseButton1Click:Connect(function()
                 op = not op
                 if op then
-                    tw(f, {Size = UDim2.new(1,0,0,105)}, 0.3, Enum.EasingStyle.Quint)
-                    tw(pa, {Size = UDim2.new(1,-24,0,55)}, 0.3, Enum.EasingStyle.Quint)
+                    tw(f,{Size=UDim2.new(1,0,0,95)},0.25,Enum.EasingStyle.Quint)
+                    tw(pa,{Size=UDim2.new(1,-20,0,48)},0.25,Enum.EasingStyle.Quint)
                 else
-                    tw(f, {Size = UDim2.new(1,0,0,42)}, 0.3, Enum.EasingStyle.Quint)
-                    tw(pa, {Size = UDim2.new(1,-24,0,0)}, 0.3, Enum.EasingStyle.Quint)
+                    tw(f,{Size=UDim2.new(1,0,0,36)},0.25,Enum.EasingStyle.Quint)
+                    tw(pa,{Size=UDim2.new(1,-20,0,0)},0.25,Enum.EasingStyle.Quint)
                 end
             end)
         end
@@ -1603,12 +1485,13 @@ function ZenithLib:Create(cfg)
         return tab
     end
 
-    function lib:GetFlag(f) return lib.Flags[f] end
+    function lib:GetFlag(f2) return lib.Flags[f2] end
     function lib:Destroy() _afk=false; SG:Destroy() end
 
+    -- Startup notify after boot
     task.spawn(function()
-        task.wait(0.6)
-        lib:Notify({Title = "Zenith v3.0 Loaded", Message = "Anti-AFK active • Press "..lib.ToggleKey.Name.." to toggle", Type = "Success", Duration = 3})
+        task.wait(2.5)
+        lib:Notify({Title="SYSTEM READY", Message="Terminal loaded. Anti-AFK: ACTIVE. Toggle: "..lib.Key.Name, Type="Success", Duration=3})
     end)
 
     return lib
