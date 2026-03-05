@@ -4,8 +4,8 @@
     ║  █▄▄   █  █ █ ▄▄ █  █ █ █ █▄▄   █ █ █ █  █ ║
     ║  ██▄▄▄ ▀▄▄▀ ▀▄▄▀ ▀▄▄▀ █ █ ██▄▄▄ ▀▄▀▄▀ ▀▄▄▀ ║
     ║                                               ║
-    ║  EUGUNEWU://HUB_v3.1 [TERMINAL_EDITION]      ║
-    ║  Retro CRT • Lightweight • Mobile Ready       ║
+    ║  EUGUNEWU://HUB_v3.2 [TERMINAL_EDITION]      ║
+    ║  Retro CRT • Eye-Friendly • Mobile Ready      ║
     ║  Anti-AFK Protocol: ALWAYS_ACTIVE              ║
     ╚═══════════════════════════════════════════════╝
 ]]
@@ -139,96 +139,134 @@ end
 -- ══════════════════════════════════════
 -- RETRO CRT THEMES
 -- ══════════════════════════════════════
+--[[
+    TEMA EYE-FRIENDLY v3.1
+    Prinsip: background tidak pitch-black (sedikit warm/cool tint),
+    accent muted/desaturated, teks tidak neon penuh,
+    kontras cukup tapi tidak menyilaukan mata.
+
+    Nama tema → nuansa:
+      Matrix  → hijau sage gelap (bukan neon)
+      Amber   → kuning kecoklatan hangat
+      Synth   → ungu-biru muted (bukan pink neon)
+      Arctic  → biru-teal kalem
+      Blood   → merah bata gelap (bukan merah darah terang)
+      Slate   → abu-biru netral (paling nyaman, default baru)
+]]
 local Themes = {
+    -- ── Slate: Abu-biru gelap, aksen biru-teal lembut. Paling eye-friendly. ──
+    Slate = {
+        Bg        = Color3.fromRGB(16, 18, 22),   -- dark blue-grey, bukan pure black
+        Card      = Color3.fromRGB(22, 25, 31),
+        CardLit   = Color3.fromRGB(30, 34, 42),
+        Surface   = Color3.fromRGB(19, 22, 27),
+        Accent    = Color3.fromRGB(100, 180, 220), -- biru-teal soft
+        AccentDim = Color3.fromRGB(60, 120, 160),
+        AccentGlow= Color3.fromRGB(120, 195, 230),
+        Text      = Color3.fromRGB(190, 210, 225), -- putih kebiruan, tidak pure white
+        TextBright= Color3.fromRGB(220, 235, 245),
+        TextDim   = Color3.fromRGB(110, 130, 150),
+        TextDark  = Color3.fromRGB(55, 70, 85),
+        Border    = Color3.fromRGB(40, 50, 65),
+        Success   = Color3.fromRGB(90, 195, 130),  -- hijau sage
+        Warning   = Color3.fromRGB(210, 170, 80),  -- kuning hangat
+        Error     = Color3.fromRGB(200, 90, 80),   -- merah bata
+        Info      = Color3.fromRGB(100, 180, 220),
+    },
+    -- ── Matrix: Hijau terminal klasik, tapi muted/sage bukan neon ──
     Matrix = {
-        Bg = Color3.fromRGB(3,8,3),
-        Card = Color3.fromRGB(6,16,6),
-        CardLit = Color3.fromRGB(10,25,10),
-        Surface = Color3.fromRGB(5,12,5),
-        Accent = Color3.fromRGB(0,255,65),
-        AccentDim = Color3.fromRGB(0,140,35),
-        AccentGlow = Color3.fromRGB(0,255,65),
-        Text = Color3.fromRGB(0,235,55),
-        TextBright = Color3.fromRGB(120,255,160),
-        TextDim = Color3.fromRGB(0,100,28),
-        TextDark = Color3.fromRGB(0,50,14),
-        Border = Color3.fromRGB(0,60,16),
-        Success = Color3.fromRGB(0,255,65),
-        Warning = Color3.fromRGB(200,255,0),
-        Error = Color3.fromRGB(255,60,40),
-        Info = Color3.fromRGB(0,200,120),
+        Bg        = Color3.fromRGB(12, 16, 12),
+        Card      = Color3.fromRGB(18, 24, 18),
+        CardLit   = Color3.fromRGB(24, 32, 24),
+        Surface   = Color3.fromRGB(15, 20, 15),
+        Accent    = Color3.fromRGB(80, 185, 100),  -- hijau sage, bukan RGB(0,255,65)
+        AccentDim = Color3.fromRGB(50, 120, 65),
+        AccentGlow= Color3.fromRGB(100, 200, 120),
+        Text      = Color3.fromRGB(150, 210, 160),
+        TextBright= Color3.fromRGB(190, 230, 195),
+        TextDim   = Color3.fromRGB(75, 130, 85),
+        TextDark  = Color3.fromRGB(38, 68, 44),
+        Border    = Color3.fromRGB(32, 55, 36),
+        Success   = Color3.fromRGB(80, 185, 100),
+        Warning   = Color3.fromRGB(195, 175, 70),
+        Error     = Color3.fromRGB(195, 85, 75),
+        Info      = Color3.fromRGB(70, 175, 145),
     },
+    -- ── Amber: Kuning kecoklatan hangat, seperti layar CRT fosfor lama ──
     Amber = {
-        Bg = Color3.fromRGB(8,5,0),
-        Card = Color3.fromRGB(16,10,2),
-        CardLit = Color3.fromRGB(25,16,4),
-        Surface = Color3.fromRGB(12,8,1),
-        Accent = Color3.fromRGB(255,176,0),
-        AccentDim = Color3.fromRGB(160,100,0),
-        AccentGlow = Color3.fromRGB(255,200,50),
-        Text = Color3.fromRGB(255,176,0),
-        TextBright = Color3.fromRGB(255,220,100),
-        TextDim = Color3.fromRGB(140,90,0),
-        TextDark = Color3.fromRGB(70,45,0),
-        Border = Color3.fromRGB(60,38,0),
-        Success = Color3.fromRGB(255,200,0),
-        Warning = Color3.fromRGB(255,140,0),
-        Error = Color3.fromRGB(255,50,30),
-        Info = Color3.fromRGB(255,176,0),
+        Bg        = Color3.fromRGB(18, 14, 8),
+        Card      = Color3.fromRGB(26, 20, 11),
+        CardLit   = Color3.fromRGB(34, 27, 14),
+        Surface   = Color3.fromRGB(22, 17, 9),
+        Accent    = Color3.fromRGB(210, 160, 60),  -- amber muted, bukan RGB(255,176,0)
+        AccentDim = Color3.fromRGB(140, 105, 38),
+        AccentGlow= Color3.fromRGB(225, 180, 85),
+        Text      = Color3.fromRGB(205, 175, 110),
+        TextBright= Color3.fromRGB(230, 205, 145),
+        TextDim   = Color3.fromRGB(130, 105, 55),
+        TextDark  = Color3.fromRGB(70, 55, 26),
+        Border    = Color3.fromRGB(58, 45, 20),
+        Success   = Color3.fromRGB(155, 185, 85),
+        Warning   = Color3.fromRGB(210, 145, 55),
+        Error     = Color3.fromRGB(195, 85, 70),
+        Info      = Color3.fromRGB(130, 175, 150),
     },
+    -- ── Synth: Ungu gelap dengan aksen lavender-biru, bukan pink neon ──
     Synth = {
-        Bg = Color3.fromRGB(5,2,12),
-        Card = Color3.fromRGB(12,5,25),
-        CardLit = Color3.fromRGB(20,8,38),
-        Surface = Color3.fromRGB(8,3,18),
-        Accent = Color3.fromRGB(255,0,110),
-        AccentDim = Color3.fromRGB(160,0,70),
-        AccentGlow = Color3.fromRGB(255,50,140),
-        Text = Color3.fromRGB(255,0,110),
-        TextBright = Color3.fromRGB(255,100,170),
-        TextDim = Color3.fromRGB(140,0,60),
-        TextDark = Color3.fromRGB(70,0,30),
-        Border = Color3.fromRGB(60,0,30),
-        Success = Color3.fromRGB(0,240,200),
-        Warning = Color3.fromRGB(255,200,0),
-        Error = Color3.fromRGB(255,40,40),
-        Info = Color3.fromRGB(0,230,255),
+        Bg        = Color3.fromRGB(14, 12, 20),
+        Card      = Color3.fromRGB(20, 17, 30),
+        CardLit   = Color3.fromRGB(28, 24, 42),
+        Surface   = Color3.fromRGB(17, 14, 25),
+        Accent    = Color3.fromRGB(155, 110, 210), -- ungu lavender soft
+        AccentDim = Color3.fromRGB(100, 70, 145),
+        AccentGlow= Color3.fromRGB(175, 135, 225),
+        Text      = Color3.fromRGB(195, 175, 230),
+        TextBright= Color3.fromRGB(220, 205, 245),
+        TextDim   = Color3.fromRGB(115, 95, 155),
+        TextDark  = Color3.fromRGB(60, 48, 85),
+        Border    = Color3.fromRGB(50, 40, 75),
+        Success   = Color3.fromRGB(90, 185, 155),
+        Warning   = Color3.fromRGB(200, 170, 75),
+        Error     = Color3.fromRGB(195, 85, 95),
+        Info      = Color3.fromRGB(110, 170, 215),
     },
+    -- ── Arctic: Biru malam kalem, aksen teal lembut ──
     Arctic = {
-        Bg = Color3.fromRGB(2,6,10),
-        Card = Color3.fromRGB(5,14,22),
-        CardLit = Color3.fromRGB(8,22,32),
-        Surface = Color3.fromRGB(3,10,16),
-        Accent = Color3.fromRGB(0,229,255),
-        AccentDim = Color3.fromRGB(0,130,150),
-        AccentGlow = Color3.fromRGB(100,240,255),
-        Text = Color3.fromRGB(0,220,245),
-        TextBright = Color3.fromRGB(140,250,255),
-        TextDim = Color3.fromRGB(0,110,130),
-        TextDark = Color3.fromRGB(0,50,60),
-        Border = Color3.fromRGB(0,45,55),
-        Success = Color3.fromRGB(0,255,180),
-        Warning = Color3.fromRGB(255,230,0),
-        Error = Color3.fromRGB(255,70,70),
-        Info = Color3.fromRGB(0,229,255),
+        Bg        = Color3.fromRGB(12, 16, 22),
+        Card      = Color3.fromRGB(17, 23, 32),
+        CardLit   = Color3.fromRGB(23, 30, 42),
+        Surface   = Color3.fromRGB(14, 19, 27),
+        Accent    = Color3.fromRGB(75, 175, 200), -- teal lembut, bukan cyan neon
+        AccentDim = Color3.fromRGB(48, 115, 135),
+        AccentGlow= Color3.fromRGB(100, 195, 215),
+        Text      = Color3.fromRGB(165, 205, 220),
+        TextBright= Color3.fromRGB(200, 225, 235),
+        TextDim   = Color3.fromRGB(85, 130, 150),
+        TextDark  = Color3.fromRGB(42, 70, 85),
+        Border    = Color3.fromRGB(35, 58, 75),
+        Success   = Color3.fromRGB(80, 185, 145),
+        Warning   = Color3.fromRGB(200, 170, 75),
+        Error     = Color3.fromRGB(195, 90, 80),
+        Info      = Color3.fromRGB(75, 175, 200),
     },
+    -- ── Blood: Merah bata gelap, tidak mencolok seperti versi lama ──
     Blood = {
-        Bg = Color3.fromRGB(8,2,2),
-        Card = Color3.fromRGB(18,5,5),
-        CardLit = Color3.fromRGB(28,8,8),
-        Surface = Color3.fromRGB(12,3,3),
-        Accent = Color3.fromRGB(255,0,50),
-        AccentDim = Color3.fromRGB(150,0,30),
-        AccentGlow = Color3.fromRGB(255,60,90),
-        Text = Color3.fromRGB(255,20,60),
-        TextBright = Color3.fromRGB(255,120,140),
-        TextDim = Color3.fromRGB(130,0,25),
-        TextDark = Color3.fromRGB(60,0,12),
-        Border = Color3.fromRGB(55,0,12),
-        Success = Color3.fromRGB(0,255,100),
-        Warning = Color3.fromRGB(255,180,0),
-        Error = Color3.fromRGB(255,0,50),
-        Info = Color3.fromRGB(255,100,120),
+        Bg        = Color3.fromRGB(18, 12, 12),
+        Card      = Color3.fromRGB(26, 17, 17),
+        CardLit   = Color3.fromRGB(35, 23, 23),
+        Surface   = Color3.fromRGB(22, 15, 15),
+        Accent    = Color3.fromRGB(195, 85, 80),  -- merah bata, bukan RGB(255,0,50)
+        AccentDim = Color3.fromRGB(130, 55, 52),
+        AccentGlow= Color3.fromRGB(215, 110, 100),
+        Text      = Color3.fromRGB(215, 170, 165),
+        TextBright= Color3.fromRGB(235, 200, 195),
+        TextDim   = Color3.fromRGB(135, 85, 80),
+        TextDark  = Color3.fromRGB(70, 42, 40),
+        Border    = Color3.fromRGB(60, 35, 33),
+        Success   = Color3.fromRGB(90, 175, 120),
+        Warning   = Color3.fromRGB(200, 165, 70),
+        Error     = Color3.fromRGB(195, 85, 80),
+        Info      = Color3.fromRGB(160, 120, 185),
     },
 }
 
@@ -238,7 +276,7 @@ function EugunewuLib:Create(cfg)
     cfg = cfg or {}
     local lib = setmetatable({}, EugunewuLib)
     lib.Name = cfg.Name or "EUGUNEWU HUB"
-    lib.T = Themes[cfg.Theme or "Matrix"] or Themes.Matrix
+    lib.T = Themes[cfg.Theme or "Slate"] or Themes.Slate
     lib.Tabs = {}
     lib.Flags = {}
     lib.Toggled = true
@@ -388,7 +426,7 @@ function EugunewuLib:Create(cfg)
     TitleLbl.Size = UDim2.new(0.5,-50,1,0)
     TitleLbl.Position = UDim2.new(0,50,0,0)
     TitleLbl.Font = Enum.Font.Code
-    TitleLbl.Text = lib.Name:upper() .. "://v3.1"
+    TitleLbl.Text = lib.Name:upper() .. "://v3.2"
     TitleLbl.TextColor3 = T.Text
     TitleLbl.TextSize = mob and 10 or 13
     TitleLbl.TextXAlignment = Enum.TextXAlignment.Left
@@ -815,7 +853,7 @@ function EugunewuLib:Create(cfg)
     -- ═══════════ BOOT ANIMATION ═══════════
     task.spawn(function()
         local bootLines = {
-            '<font color="#'..T.TextDim:ToHex()..'">[BOOT]</font> EUGUNEWU://hub_v3.1 initializing...',
+            '<font color="#'..T.TextDim:ToHex()..'">[BOOT]</font> EUGUNEWU://hub_v3.2 initializing...',
             '<font color="#'..T.TextDim:ToHex()..'">[LOAD]</font> core_modules............. <font color="#'..T.Success:ToHex()..'">OK</font>',
             '<font color="#'..T.TextDim:ToHex()..'">[PROT]</font> anti_afk_engaged........ <font color="#'..T.Success:ToHex()..'">OK</font>',
             '<font color="#'..T.TextDim:ToHex()..'">[SCAN]</font> device: <font color="#'..T.Accent:ToHex()..'">' .. (mob and "MOBILE" or "DESKTOP") .. '</font>',
@@ -1390,7 +1428,7 @@ function EugunewuLib:Create(cfg)
     function lib:Destroy() _afk=false; SG:Destroy() end
 
     task.delay(2.0, function()
-        lib:Notify({Title="SYSTEM READY", Message="EUGUNEWU HUB v3.1. Anti-AFK: ACTIVE", Type="Success", Duration=3})
+        lib:Notify({Title="SYSTEM READY", Message="EUGUNEWU HUB v3.2. Anti-AFK: ACTIVE", Type="Success", Duration=3})
     end)
 
     return lib
