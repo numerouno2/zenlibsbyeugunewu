@@ -414,97 +414,76 @@ function EugunewuLib:Create(cfg)
     TDash.Parent                 = TitleBar
 
     -- ══════════════════════════════════════
-    -- TAB BAR
-    -- Mobile : ScrollingFrame horizontal 1 baris, bisa swipe
-    -- Desktop: ScrollingFrame vertical sidebar
+    -- TAB BAR — HORIZONTAL ATAS (desktop + mobile)
+    -- Seperti Rayfield: tab di atas, scroll jika tidak muat
     -- ══════════════════════════════════════
 
-    local tbW       = mob and 0 or 130
-    local TAB_H_MOB = 28    -- tinggi tab bar mobile (1 baris)
-    local TAB_BTN_W = 76    -- lebar tiap tombol tab
-    local TAB_BTN_H = 22    -- tinggi tombol tab
-    local tbH       = mob and TAB_H_MOB or 0
+    local tbW       = 0                          -- tidak ada sidebar
+    local TAB_BTN_H = mob and 22 or 26           -- tinggi tombol tab
+    local TAB_BTN_W = mob and 72 or 88           -- lebar tiap tab
+    local TAB_BAR_H = mob and (TAB_BTN_H + 6) or (TAB_BTN_H + 8)  -- tinggi tab bar total
 
-    local TabBar, _tabLL
-    if mob then
-        TabBar = Instance.new("ScrollingFrame")
-        TabBar.BackgroundColor3       = T.Surface
-        TabBar.BackgroundTransparency = 0.5
-        TabBar.BorderSizePixel        = 0
-        TabBar.Size                   = UDim2.new(1, 0, 0, TAB_H_MOB)
-        TabBar.Position               = UDim2.new(0, 0, 0, TH + 2)
-        TabBar.ScrollBarThickness     = 0
-        TabBar.ScrollingDirection     = Enum.ScrollingDirection.X
-        TabBar.ScrollingEnabled       = true
-        TabBar.ElasticBehavior        = Enum.ElasticBehavior.WhenScrollable
-        TabBar.AutomaticCanvasSize    = Enum.AutomaticSize.X
-        TabBar.CanvasSize             = UDim2.new(0, 0, 0, 0)
-        TabBar.CanvasPosition         = Vector2.new(0, 0)
-        TabBar.ZIndex                 = 40
-        TabBar.ClipsDescendants       = true
-        TabBar.Parent                 = Main
+    -- Tab bar: ScrollingFrame horizontal di bawah TitleBar
+    local TabBar = Instance.new("ScrollingFrame")
+    TabBar.Name                   = "TabBar"
+    TabBar.BackgroundColor3       = T.Surface
+    TabBar.BackgroundTransparency = 0.55
+    TabBar.BorderSizePixel        = 0
+    TabBar.Size                   = UDim2.new(1, 0, 0, TAB_BAR_H)
+    TabBar.Position               = UDim2.new(0, 0, 0, TH + 2)
+    TabBar.ScrollBarThickness     = 0              -- scrollbar tersembunyi
+    TabBar.ScrollingDirection     = Enum.ScrollingDirection.X
+    TabBar.ScrollingEnabled       = true
+    TabBar.ElasticBehavior        = Enum.ElasticBehavior.WhenScrollable
+    TabBar.AutomaticCanvasSize    = Enum.AutomaticSize.X
+    TabBar.CanvasSize             = UDim2.new(0, 0, 0, 0)
+    TabBar.CanvasPosition         = Vector2.new(0, 0)
+    TabBar.ZIndex                 = 40
+    TabBar.ClipsDescendants       = true
+    TabBar.Parent                 = Main
 
-        _tabLL = Instance.new("UIListLayout")
-        _tabLL.FillDirection       = Enum.FillDirection.Horizontal
-        _tabLL.HorizontalAlignment = Enum.HorizontalAlignment.Left
-        _tabLL.VerticalAlignment   = Enum.VerticalAlignment.Center
-        _tabLL.Padding             = UDim.new(0, 4)
-        _tabLL.SortOrder           = Enum.SortOrder.LayoutOrder
-        _tabLL.Parent              = TabBar
+    -- Layout horizontal
+    local _tabLL = Instance.new("UIListLayout")
+    _tabLL.FillDirection       = Enum.FillDirection.Horizontal
+    _tabLL.HorizontalAlignment = Enum.HorizontalAlignment.Left
+    _tabLL.VerticalAlignment   = Enum.VerticalAlignment.Center
+    _tabLL.Padding             = UDim.new(0, 4)
+    _tabLL.SortOrder           = Enum.SortOrder.LayoutOrder
+    _tabLL.Parent              = TabBar
 
-        -- padding kiri via UIPadding (tidak ikut canvas X karena UIPadding tidak dihitung UIListLayout)
-        local uip = Instance.new("UIPadding")
-        uip.PaddingLeft  = UDim.new(0, 4)
-        uip.PaddingRight = UDim.new(0, 4)
-        uip.PaddingTop   = UDim.new(0, 3)
-        uip.PaddingBottom = UDim.new(0, 3)
-        uip.Parent = TabBar
-    else
-        TabBar = Instance.new("ScrollingFrame")
-        TabBar.BackgroundColor3       = T.Surface
-        TabBar.BackgroundTransparency = 0.5
-        TabBar.BorderSizePixel        = 0
-        TabBar.Size                   = UDim2.new(0, tbW, 1, -(TH+4))
-        TabBar.Position               = UDim2.new(0, 0, 0, TH+2)
-        TabBar.ScrollBarThickness     = 2
-        TabBar.ScrollBarImageColor3   = T.Accent
-        TabBar.ScrollBarImageTransparency = 0.6
-        TabBar.AutomaticCanvasSize    = Enum.AutomaticSize.Y
-        TabBar.CanvasSize             = UDim2.new(0, 0, 0, 0)
-        TabBar.ZIndex                 = 40
-        TabBar.Parent                 = Main
-        ll(TabBar, Enum.FillDirection.Vertical, 2, Enum.HorizontalAlignment.Center)
-        pd(TabBar, 8, 8, 6, 6)
+    -- Padding dalam tab bar
+    local _tabPad = Instance.new("UIPadding")
+    _tabPad.PaddingLeft   = UDim.new(0, 6)
+    _tabPad.PaddingRight  = UDim.new(0, 6)
+    _tabPad.PaddingTop    = UDim.new(0, 3)
+    _tabPad.PaddingBottom = UDim.new(0, 3)
+    _tabPad.Parent        = TabBar
 
-        local sbLine = Instance.new("Frame")
-        sbLine.BackgroundColor3       = T.Border
-        sbLine.BackgroundTransparency = 0.3
-        sbLine.BorderSizePixel        = 0
-        sbLine.Size                   = UDim2.new(0, 1, 1, -(TH+8))
-        sbLine.Position               = UDim2.new(0, tbW, 0, TH+4)
-        sbLine.ZIndex                 = 45
-        sbLine.Parent                 = Main
-    end
+    -- Garis bawah tab bar (separator sebelum content)
+    local _tabSep = Instance.new("Frame")
+    _tabSep.BackgroundColor3       = T.Accent
+    _tabSep.BackgroundTransparency = 0.55
+    _tabSep.BorderSizePixel        = 0
+    _tabSep.Size                   = UDim2.new(1, 0, 0, 1)
+    _tabSep.Position               = UDim2.new(0, 0, 1, -1)
+    _tabSep.ZIndex                 = 41
+    _tabSep.Parent                 = TabBar
+
     lib.TabBar = TabBar
 
     -- ══════════════════════════════════════
-    -- CONTENT AREA
+    -- CONTENT AREA — di bawah tab bar
     -- ══════════════════════════════════════
+    local _contentY = TH + 2 + TAB_BAR_H + 1
+
     local Content = Instance.new("Frame")
     Content.BackgroundTransparency = 1
     Content.BorderSizePixel        = 0
     Content.ClipsDescendants       = true
+    Content.Size                   = UDim2.new(1, 0, 1, -_contentY)
+    Content.Position               = UDim2.new(0, 0, 0, _contentY)
     Content.ZIndex                 = 2
     Content.Parent                 = Main
-
-    if mob then
-        local contentOffsetY = TH + 2 + tbH + 2
-        Content.Size     = UDim2.new(1, 0, 1, -contentOffsetY)
-        Content.Position = UDim2.new(0, 0, 0, contentOffsetY)
-    else
-        Content.Size     = UDim2.new(1, -tbW-1, 1, -(TH+2))
-        Content.Position = UDim2.new(0, tbW+1, 0, TH+2)
-    end
     lib.Content = Content
 
     -- ══════════════════════════════════════
@@ -767,39 +746,23 @@ function EugunewuLib:Create(cfg)
         local tabName = cfg3.Name or "tab"
         local tab     = {Name=tabName}
 
-        local TabBtn
-        if mob then
-            TabBtn = Instance.new("TextButton")
-            TabBtn.BackgroundColor3       = T.Card
-            TabBtn.BackgroundTransparency = 0.4
-            TabBtn.Size                   = UDim2.new(0, TAB_BTN_W, 0, TAB_BTN_H)
-            TabBtn.Font                   = Enum.Font.Code
-            TabBtn.Text                   = tabName:lower().."_"
-            TabBtn.TextColor3             = T.TextDim
-            TabBtn.TextSize               = 9
-            TabBtn.TextXAlignment         = Enum.TextXAlignment.Center
-            TabBtn.TextTruncate           = Enum.TextTruncate.AtEnd
-            TabBtn.BorderSizePixel        = 0
-            TabBtn.AutoButtonColor        = false
-            TabBtn.ZIndex                 = 42
-            TabBtn.Parent                 = TabBar
-            rc(TabBtn, 2)
-            st(TabBtn, T.Border, 1, 0.7)
-        else
-            TabBtn = Instance.new("TextButton")
-            TabBtn.BackgroundTransparency = 1
-            TabBtn.Size                   = UDim2.new(1, 0, 0, 26)
-            TabBtn.Font                   = Enum.Font.Code
-            TabBtn.Text                   = "   "..tabName:lower().."_"
-            TabBtn.TextColor3             = T.TextDark
-            TabBtn.TextSize               = 11
-            TabBtn.TextXAlignment         = Enum.TextXAlignment.Left
-            TabBtn.BorderSizePixel        = 0
-            TabBtn.AutoButtonColor        = false
-            TabBtn.ZIndex                 = 41
-            TabBtn.Parent                 = TabBar
-            rc(TabBtn, 2)
-        end
+        -- Tab button — sama untuk desktop dan mobile (horizontal atas)
+        local TabBtn = Instance.new("TextButton")
+        TabBtn.BackgroundColor3       = T.Card
+        TabBtn.BackgroundTransparency = 0.5
+        TabBtn.Size                   = UDim2.new(0, TAB_BTN_W, 0, TAB_BTN_H)
+        TabBtn.Font                   = Enum.Font.Code
+        TabBtn.Text                   = tabName:lower().."_"
+        TabBtn.TextColor3             = T.TextDim
+        TabBtn.TextSize               = mob and 9 or 10
+        TabBtn.TextXAlignment         = Enum.TextXAlignment.Center
+        TabBtn.TextTruncate           = Enum.TextTruncate.AtEnd
+        TabBtn.BorderSizePixel        = 0
+        TabBtn.AutoButtonColor        = false
+        TabBtn.ZIndex                 = 42
+        TabBtn.Parent                 = TabBar
+        rc(TabBtn, 2)
+        st(TabBtn, T.Border, 1, 0.75)
         tab.Button = TabBtn
 
         local Page = Instance.new("ScrollingFrame")
@@ -819,59 +782,53 @@ function EugunewuLib:Create(cfg)
         tab.Page = Page
 
         local function SelectTab()
+            -- Reset semua tab ke inactive
             for _, t2 in ipairs(lib.Tabs) do
-                t2.Page.Visible = false
-                if mob then
-                    t2.Button.BackgroundColor3       = T.Card
-                    t2.Button.BackgroundTransparency = 0.4
-                    t2.Button.TextColor3             = T.TextDim
-                else
-                    t2.Button.Text                   = "   "..t2.Name:lower().."_"
-                    t2.Button.TextColor3             = T.TextDark
-                    t2.Button.BackgroundTransparency = 1
+                t2.Page.Visible               = false
+                t2.Button.BackgroundColor3    = T.Card
+                t2.Button.BackgroundTransparency = 0.5
+                t2.Button.TextColor3          = T.TextDim
+                t2.Button.Text               = t2.Name:lower().."_"
+            end
+            -- Aktifkan tab ini
+            Page.Visible                      = true
+            TabBtn.BackgroundColor3           = T.Accent
+            TabBtn.BackgroundTransparency     = 0.05
+            TabBtn.TextColor3                 = T.Bg
+            TabBtn.Text                       = tabName:lower().."_"
+            lib.CurrentTab                    = tab
+
+            -- Auto-scroll tab bar agar tab aktif selalu kelihatan
+            task.defer(function()
+                if not TabBar or not TabBar.Parent then return end
+                local tabIdx = 0
+                for i, t2 in ipairs(lib.Tabs) do
+                    if t2 == tab then tabIdx = i; break end
                 end
-            end
-            Page.Visible = true
-            if mob then
-                TabBtn.BackgroundColor3       = T.Accent
-                TabBtn.BackgroundTransparency = 0.1
-                TabBtn.TextColor3             = T.Bg
-                -- Scroll TabBar agar tab yang aktif selalu kelihatan
-                task.defer(function()
-                    if not TabBar or not TabBar.Parent then return end
-                    local tabIdx = 0
-                    for i, t2 in ipairs(lib.Tabs) do
-                        if t2 == tab then tabIdx = i; break end
-                    end
-                    -- Hitung posisi X tab ini di canvas
-                    local btnX = (tabIdx - 1) * (TAB_BTN_W + 4) + 4
-                    local visW  = TabBar.AbsoluteSize.X
-                    local curX  = TabBar.CanvasPosition.X
-                    -- Scroll hanya jika tab di luar viewport
-                    if btnX < curX then
-                        TabBar.CanvasPosition = Vector2.new(math.max(0, btnX - 4), 0)
-                    elseif btnX + TAB_BTN_W > curX + visW then
-                        TabBar.CanvasPosition = Vector2.new(btnX + TAB_BTN_W - visW + 8, 0)
-                    end
-                end)
-            else
-                TabBtn.Text                   = " ► "..tabName:lower().."_▌"
-                TabBtn.TextColor3             = T.Accent
-                TabBtn.BackgroundTransparency = 0.7
-                TabBtn.BackgroundColor3       = T.Card
-            end
-            lib.CurrentTab = tab
+                local btnX = (tabIdx - 1) * (TAB_BTN_W + 4) + 6
+                local visW = TabBar.AbsoluteSize.X
+                local curX = TabBar.CanvasPosition.X
+                if btnX < curX then
+                    TabBar.CanvasPosition = Vector2.new(math.max(0, btnX - 6), 0)
+                elseif btnX + TAB_BTN_W > curX + visW then
+                    TabBar.CanvasPosition = Vector2.new(btnX + TAB_BTN_W - visW + 10, 0)
+                end
+            end)
         end
 
         TabBtn.MouseButton1Click:Connect(SelectTab)
-        if not mob then
-            TabBtn.MouseEnter:Connect(function()
-                if lib.CurrentTab ~= tab then TabBtn.TextColor3 = T.TextDim end
-            end)
-            TabBtn.MouseLeave:Connect(function()
-                if lib.CurrentTab ~= tab then TabBtn.TextColor3 = T.TextDark end
-            end)
-        end
+        TabBtn.MouseEnter:Connect(function()
+            if lib.CurrentTab ~= tab then
+                TabBtn.BackgroundTransparency = 0.25
+                TabBtn.TextColor3 = T.Text
+            end
+        end)
+        TabBtn.MouseLeave:Connect(function()
+            if lib.CurrentTab ~= tab then
+                TabBtn.BackgroundTransparency = 0.5
+                TabBtn.TextColor3 = T.TextDim
+            end
+        end)
 
         table.insert(lib.Tabs, tab)
         if #lib.Tabs == 1 then SelectTab() end
