@@ -240,7 +240,7 @@ function EugunewuLib:Create(cfg)
     -- UKURAN WINDOW — mobile lebih tinggi untuk tab bar 2 baris
     -- ══════════════════════════════════════
     local W = mob and 370 or 540
-    local H = mob and 355 or 430  -- cukup untuk 1 baris tab
+    local H = mob and 355 or 430
 
     local Main = Instance.new("Frame")
     Main.Name             = "Terminal"
@@ -415,59 +415,50 @@ function EugunewuLib:Create(cfg)
 
     -- ══════════════════════════════════════
     -- TAB BAR
-    -- Mobile : ScrollingFrame horizontal, tab compact, swipe fix
+    -- Mobile : ScrollingFrame horizontal 1 baris, bisa swipe
     -- Desktop: ScrollingFrame vertical sidebar
     -- ══════════════════════════════════════
 
     local tbW       = mob and 0 or 130
-    local TAB_H_MOB = 26    -- tinggi tab mobile (compact, sama seperti aslinya)
-    local tbH       = mob and (TAB_H_MOB + 6) or 0  -- satu baris + padding
+    local TAB_H_MOB = 28    -- tinggi tab bar mobile (1 baris)
+    local TAB_BTN_W = 76    -- lebar tiap tombol tab
+    local TAB_BTN_H = 22    -- tinggi tombol tab
+    local tbH       = mob and TAB_H_MOB or 0
 
-    -- Tab width per item — kompak agar lebih banyak muat
-    local TAB_BTN_W = mob and 78 or 0   -- lebar tiap tab mobile
-    local TAB_PAD   = 4                 -- padding kiri/kanan total
-
-    local TabBar
+    local TabBar, _tabLL
     if mob then
-        -- ScrollingFrame horizontal — SAMA seperti aslinya
-        -- Fix: CanvasSize diset manual setelah semua tab ditambah (bukan AutomaticCanvasSize)
-        -- karena AutomaticCanvasSize.X kadang tidak update di Roblox mobile
         TabBar = Instance.new("ScrollingFrame")
-        TabBar.BackgroundColor3          = T.Surface
-        TabBar.BackgroundTransparency    = 0.55
-        TabBar.BorderSizePixel           = 0
-        TabBar.Size                      = UDim2.new(1, 0, 0, tbH)
-        TabBar.Position                  = UDim2.new(0, 0, 0, TH + 2)
-        TabBar.ScrollBarThickness        = 0   -- scrollbar disembunyikan (swipe manual)
-        TabBar.ScrollingDirection        = Enum.ScrollingDirection.X
-        TabBar.ElasticBehavior           = Enum.ElasticBehavior.Always
-        TabBar.ScrollingEnabled          = true
-        TabBar.CanvasPosition            = Vector2.new(0, 0)   -- mulai dari kiri (fix terpotong)
-        TabBar.CanvasSize                = UDim2.new(0, 0, 0, 0)  -- akan diupdate manual
-        TabBar.AutomaticCanvasSize       = Enum.AutomaticSize.None -- matikan auto (tidak reliable)
-        TabBar.ZIndex                    = 40
-        TabBar.ClipsDescendants          = true
-        TabBar.Parent                    = Main
+        TabBar.BackgroundColor3       = T.Surface
+        TabBar.BackgroundTransparency = 0.5
+        TabBar.BorderSizePixel        = 0
+        TabBar.Size                   = UDim2.new(1, 0, 0, TAB_H_MOB)
+        TabBar.Position               = UDim2.new(0, 0, 0, TH + 2)
+        TabBar.ScrollBarThickness     = 0
+        TabBar.ScrollingDirection     = Enum.ScrollingDirection.X
+        TabBar.ScrollingEnabled       = true
+        TabBar.ElasticBehavior        = Enum.ElasticBehavior.WhenScrollable
+        TabBar.AutomaticCanvasSize    = Enum.AutomaticSize.X
+        TabBar.CanvasSize             = UDim2.new(0, 0, 0, 0)
+        TabBar.CanvasPosition         = Vector2.new(0, 0)
+        TabBar.ZIndex                 = 40
+        TabBar.ClipsDescendants       = true
+        TabBar.Parent                 = Main
 
-        -- Layout horizontal dengan gap kecil
-        local tll = Instance.new("UIListLayout")
-        tll.FillDirection       = Enum.FillDirection.Horizontal
-        tll.HorizontalAlignment = Enum.HorizontalAlignment.Left
-        tll.VerticalAlignment   = Enum.VerticalAlignment.Center
-        tll.Padding             = UDim.new(0, 3)
-        tll.SortOrder           = Enum.SortOrder.LayoutOrder
-        tll.Parent              = TabBar
-        pd(TabBar, 2, 2, TAB_PAD, TAB_PAD)
+        _tabLL = Instance.new("UIListLayout")
+        _tabLL.FillDirection       = Enum.FillDirection.Horizontal
+        _tabLL.HorizontalAlignment = Enum.HorizontalAlignment.Left
+        _tabLL.VerticalAlignment   = Enum.VerticalAlignment.Center
+        _tabLL.Padding             = UDim.new(0, 4)
+        _tabLL.SortOrder           = Enum.SortOrder.LayoutOrder
+        _tabLL.Parent              = TabBar
 
-        -- Garis bawah tipis sebagai separator
-        local tbLine = Instance.new("Frame")
-        tbLine.BackgroundColor3    = T.Accent
-        tbLine.BackgroundTransparency = 0.6
-        tbLine.BorderSizePixel     = 0
-        tbLine.Size                = UDim2.new(1, 0, 0, 1)
-        tbLine.Position            = UDim2.new(0, 0, 1, -1)
-        tbLine.ZIndex              = 41
-        tbLine.Parent              = TabBar
+        -- padding kiri via UIPadding (tidak ikut canvas X karena UIPadding tidak dihitung UIListLayout)
+        local uip = Instance.new("UIPadding")
+        uip.PaddingLeft  = UDim.new(0, 4)
+        uip.PaddingRight = UDim.new(0, 4)
+        uip.PaddingTop   = UDim.new(0, 3)
+        uip.PaddingBottom = UDim.new(0, 3)
+        uip.Parent = TabBar
     else
         TabBar = Instance.new("ScrollingFrame")
         TabBar.BackgroundColor3       = T.Surface
@@ -497,7 +488,7 @@ function EugunewuLib:Create(cfg)
     lib.TabBar = TabBar
 
     -- ══════════════════════════════════════
-    -- CONTENT AREA — sesuaikan offset untuk tab bar 2 baris
+    -- CONTENT AREA
     -- ══════════════════════════════════════
     local Content = Instance.new("Frame")
     Content.BackgroundTransparency = 1
@@ -780,8 +771,8 @@ function EugunewuLib:Create(cfg)
         if mob then
             TabBtn = Instance.new("TextButton")
             TabBtn.BackgroundColor3       = T.Card
-            TabBtn.BackgroundTransparency = 0.35
-            TabBtn.Size                   = UDim2.new(0, TAB_BTN_W, 0, TAB_H_MOB - 4)
+            TabBtn.BackgroundTransparency = 0.4
+            TabBtn.Size                   = UDim2.new(0, TAB_BTN_W, 0, TAB_BTN_H)
             TabBtn.Font                   = Enum.Font.Code
             TabBtn.Text                   = tabName:lower().."_"
             TabBtn.TextColor3             = T.TextDim
@@ -793,23 +784,7 @@ function EugunewuLib:Create(cfg)
             TabBtn.ZIndex                 = 42
             TabBtn.Parent                 = TabBar
             rc(TabBtn, 2)
-            st(TabBtn, T.Border, 1, 0.75)
-
-            -- Update canvas size manual setelah tab ditambah
-            -- Ini fix utama: pastikan tab pertama tidak terpotong
-            task.defer(function()
-                local totalW = TAB_PAD * 2
-                local count  = 0
-                for _, child in ipairs(TabBar:GetChildren()) do
-                    if child:IsA("TextButton") then
-                        count = count + 1
-                    end
-                end
-                totalW = totalW + count * (TAB_BTN_W + 3)
-                TabBar.CanvasSize = UDim2.new(0, totalW, 0, 0)
-                -- Pastikan canvas dimulai dari posisi 0 (tab pertama selalu kelihatan)
-                TabBar.CanvasPosition = Vector2.new(0, 0)
-            end)
+            st(TabBtn, T.Border, 1, 0.7)
         else
             TabBtn = Instance.new("TextButton")
             TabBtn.BackgroundTransparency = 1
@@ -848,7 +823,7 @@ function EugunewuLib:Create(cfg)
                 t2.Page.Visible = false
                 if mob then
                     t2.Button.BackgroundColor3       = T.Card
-                    t2.Button.BackgroundTransparency = 0.35
+                    t2.Button.BackgroundTransparency = 0.4
                     t2.Button.TextColor3             = T.TextDim
                 else
                     t2.Button.Text                   = "   "..t2.Name:lower().."_"
@@ -861,16 +836,22 @@ function EugunewuLib:Create(cfg)
                 TabBtn.BackgroundColor3       = T.Accent
                 TabBtn.BackgroundTransparency = 0.1
                 TabBtn.TextColor3             = T.Bg
-
-                -- Scroll ke tab yang diklik agar selalu kelihatan
+                -- Scroll TabBar agar tab yang aktif selalu kelihatan
                 task.defer(function()
-                    local tabIndex = 0
+                    if not TabBar or not TabBar.Parent then return end
+                    local tabIdx = 0
                     for i, t2 in ipairs(lib.Tabs) do
-                        if t2 == tab then tabIndex = i; break end
+                        if t2 == tab then tabIdx = i; break end
                     end
-                    if tabIndex > 0 then
-                        local scrollX = math.max(0, (tabIndex-1) * (TAB_BTN_W + 3) - 10)
-                        TabBar.CanvasPosition = Vector2.new(scrollX, 0)
+                    -- Hitung posisi X tab ini di canvas
+                    local btnX = (tabIdx - 1) * (TAB_BTN_W + 4) + 4
+                    local visW  = TabBar.AbsoluteSize.X
+                    local curX  = TabBar.CanvasPosition.X
+                    -- Scroll hanya jika tab di luar viewport
+                    if btnX < curX then
+                        TabBar.CanvasPosition = Vector2.new(math.max(0, btnX - 4), 0)
+                    elseif btnX + TAB_BTN_W > curX + visW then
+                        TabBar.CanvasPosition = Vector2.new(btnX + TAB_BTN_W - visW + 8, 0)
                     end
                 end)
             else
