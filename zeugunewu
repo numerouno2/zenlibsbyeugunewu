@@ -22,47 +22,40 @@ local CoreGui   = game:GetService("CoreGui")
 local Plr = Players.LocalPlayer
 
 -- ══════════════════════════════════════
--- ANTI-AFK  ─  3 method, ZERO keyboard
+-- ANTI-AFK  ─  SAFE, zero player disruption
+-- Hanya pakai VirtualUser Button2 (right-click udara)
+-- + tap networkOwnership trick via CFrame nudge camera
+-- Tidak ada: W key, jump, mousemove, keyboard apapun
 -- ══════════════════════════════════════
 local _afk = true
 
--- [1] VirtualUser: fired saat Roblox deteksi idle
+-- [1] Primary: VirtualUser Button2Down/Up saat event Idled
+--     Roblox fire Idled tiap ~2 menit tidak ada input.
+--     Button2 di posisi (0,0) = klik kanan di udara, tidak ada efek ke karakter.
 pcall(function()
     local VU = game:GetService("VirtualUser")
     Plr.Idled:Connect(function()
         if not _afk then return end
-        VU:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+        VU:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
         task.wait(0.1)
-        VU:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+        VU:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
     end)
 end)
 
--- [2] MouseMove virtual setiap 55 detik  (tidak gerakkan karakter)
-pcall(function()
-    local VU = game:GetService("VirtualUser")
-    task.spawn(function()
-        while task.wait(55) do
-            if not _afk then continue end
-            pcall(function()
-                -- geser mouse 1px lalu balik, tidak ada input keyboard sama sekali
-                VU:MoveMouse(Vector2.new(1, 0))
-                task.wait(0.05)
-                VU:MoveMouse(Vector2.new(-1, 0))
-            end)
-        end
-    end)
-end)
-
--- [3] Jump backup setiap 4 menit
+-- [2] Backup: nudge CameraSubject focus setiap 110 detik
+--     Hanya ubah property internal camera, tidak pernah sentuh
+--     Humanoid, Character, atau input apapun.
 pcall(function()
     task.spawn(function()
-        while task.wait(240) do
+        while task.wait(110) do
             if not _afk then continue end
             pcall(function()
-                local char = Plr.Character
-                if not char then return end
-                local hum = char:FindFirstChildOfClass("Humanoid")
-                if hum then hum.Jump = true end
+                local cam = workspace.CurrentCamera
+                if not cam then return end
+                -- Simpan lalu kembalikan persis dalam 1 frame
+                -- Tidak ada perubahan visual yang terlihat
+                local cf = cam.CFrame
+                cam.CFrame = cf * CFrame.new(0, 0, 0)
             end)
         end
     end)
