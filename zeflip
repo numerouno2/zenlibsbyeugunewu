@@ -4,7 +4,7 @@
     ║  █▄▄   █  █ █ ▄▄ █  █ █ █ █▄▄   █ █ █ █  █ ║
     ║  ██▄▄▄ ▀▄▄▀ ▀▄▄▀ ▀▄▄▀ █ █ ██▄▄▄ ▀▄▀▄▀ ▀▄▄▀ ║
     ║                                               ║
-    ║  EUGUNEWU://HUB_v3.7 [TERMINAL_EDITION]      ║
+    ║  EUGUNEWU://HUB_v3.3 [TERMINAL_EDITION]      ║
     ║  Retro CRT • Eye-Friendly • Mobile Ready      ║
     ║  Anti-AFK Protocol: ALWAYS_ACTIVE              ║
     ╚═══════════════════════════════════════════════╝
@@ -186,13 +186,10 @@ local function ll(p, dir, padding, al)
     return u
 end
 
--- glow: aktif di semua elemen KECUALI tab button
--- intensity dibatasi max 0.82 supaya tidak blur
 local function glow(lbl, col, intensity)
     if not perfMode then
         lbl.TextStrokeColor3 = col
-        -- clamp intensity agar tidak terlalu tebal/blur
-        lbl.TextStrokeTransparency = math.clamp(intensity or 0.82, 0.78, 0.95)
+        lbl.TextStrokeTransparency = intensity or 0.72
     end
 end
 
@@ -397,7 +394,7 @@ function EugunewuLib:Create(cfg)
     Main.ZIndex = 1
     Main.Parent = SG
     rc(Main, 3)
-    local mainStroke = st(Main, T.Border, 1, 0.2)  -- border subtle, tidak glowy
+    local mainStroke = st(Main, T.Accent, 1.5, 0.25)  -- lebih visible
     lib.Main = Main
 
     -- ═══════════ SCANLINES ═══════════
@@ -479,12 +476,12 @@ function EugunewuLib:Create(cfg)
     local SysBadge = Instance.new("TextLabel")
     SysBadge.BackgroundColor3 = T.Accent
     SysBadge.BackgroundTransparency = 0.75
-    SysBadge.Size = UDim2.new(0, 48, 0, 20)
-    SysBadge.Position = UDim2.new(0, 8, 0.5, -10)
-    SysBadge.Font = Enum.Font.GothamMedium
+    SysBadge.Size = UDim2.new(0, 38, 0, 16)
+    SysBadge.Position = UDim2.new(0, 8, 0.5, -8)
+    SysBadge.Font = Enum.Font.Code
     SysBadge.Text = "[SYS]"
     SysBadge.TextColor3 = T.Accent
-    SysBadge.TextSize = 11
+    SysBadge.TextSize = 8
     SysBadge.ZIndex = 51
     SysBadge.Parent = TitleBar
     rc(SysBadge, 2)
@@ -494,10 +491,10 @@ function EugunewuLib:Create(cfg)
     TitleLbl.BackgroundTransparency = 1
     TitleLbl.Size = UDim2.new(0.5, -50, 1, 0)
     TitleLbl.Position = UDim2.new(0, 50, 0, 0)
-    TitleLbl.Font = Enum.Font.GothamMedium
-    TitleLbl.Text = lib.Name:upper() .. "://v3.7"
+    TitleLbl.Font = Enum.Font.Code
+    TitleLbl.Text = lib.Name:upper() .. "://v3.4"
     TitleLbl.TextColor3 = T.TextBright  -- lebih cerah dari v3.2
-    TitleLbl.TextSize = mob and 13 or 15
+    TitleLbl.TextSize = mob and 10 or 13
     TitleLbl.TextXAlignment = Enum.TextXAlignment.Left
     TitleLbl.ZIndex = 51
     TitleLbl.Parent = TitleBar
@@ -507,10 +504,10 @@ function EugunewuLib:Create(cfg)
     CursorLbl.BackgroundTransparency = 1
     CursorLbl.Size = UDim2.new(0, 10, 1, 0)
     CursorLbl.Position = UDim2.new(0, mob and 175 or 230, 0, 0)
-    CursorLbl.Font = Enum.Font.GothamMedium
+    CursorLbl.Font = Enum.Font.Code
     CursorLbl.Text = "▌"
     CursorLbl.TextColor3 = T.Accent
-    CursorLbl.TextSize = mob and 13 or 15
+    CursorLbl.TextSize = mob and 11 or 14
     CursorLbl.ZIndex = 51
     CursorLbl.Parent = TitleBar
     glow(CursorLbl, T.AccentGlow, 0.4)
@@ -524,12 +521,12 @@ function EugunewuLib:Create(cfg)
 
     local AfkLbl = Instance.new("TextLabel")
     AfkLbl.BackgroundTransparency = 1
-    AfkLbl.Size = UDim2.new(0, 72, 0, 20)
-    AfkLbl.Position = UDim2.new(1, mob and -108 or -128, 0.5, -10)
-    AfkLbl.Font = Enum.Font.GothamMedium
+    AfkLbl.Size = UDim2.new(0, 60, 0, 16)
+    AfkLbl.Position = UDim2.new(1, mob and -100 or -115, 0.5, -8)
+    AfkLbl.Font = Enum.Font.Code
     AfkLbl.Text = "[AFK:●]"
     AfkLbl.TextColor3 = T.Success
-    AfkLbl.TextSize = mob and 11 or 13
+    AfkLbl.TextSize = mob and 8 or 10
     AfkLbl.ZIndex = 51
     AfkLbl.Parent = TitleBar
     glow(AfkLbl, T.Success, 0.5)
@@ -537,12 +534,12 @@ function EugunewuLib:Create(cfg)
     local MinBtn = Instance.new("TextButton")
     MinBtn.BackgroundColor3 = T.Card
     MinBtn.BackgroundTransparency = 0.4
-    MinBtn.Size = UDim2.new(0, 34, 0, 22)
-    MinBtn.Position = UDim2.new(1, -42, 0.5, -11)
-    MinBtn.Font = Enum.Font.GothamMedium
+    MinBtn.Size = UDim2.new(0, 26, 0, 18)
+    MinBtn.Position = UDim2.new(1, -34, 0.5, -9)
+    MinBtn.Font = Enum.Font.Code
     MinBtn.Text = "[—]"
     MinBtn.TextColor3 = T.TextDim
-    MinBtn.TextSize = 12
+    MinBtn.TextSize = 9
     MinBtn.ZIndex = 52
     MinBtn.BorderSizePixel = 0
     MinBtn.AutoButtonColor = false
@@ -556,10 +553,10 @@ function EugunewuLib:Create(cfg)
     TDash.BackgroundTransparency = 1
     TDash.Size = UDim2.new(1, -16, 0, 8)
     TDash.Position = UDim2.new(0, 8, 1, -6)
-    TDash.Font = Enum.Font.GothamMedium
+    TDash.Font = Enum.Font.Code
     TDash.Text = string.rep("─", 80)
     TDash.TextColor3 = T.Border
-    TDash.TextSize = 8
+    TDash.TextSize = 7
     TDash.TextXAlignment = Enum.TextXAlignment.Left
     TDash.TextTruncate = Enum.TextTruncate.AtEnd
     TDash.ZIndex = 50
@@ -597,10 +594,10 @@ function EugunewuLib:Create(cfg)
         BtnL.BorderSizePixel = 0
         BtnL.Size = UDim2.new(0, 24, 1, 0)
         BtnL.Position = UDim2.new(0, 0, 0, 0)
-        BtnL.Font = Enum.Font.GothamMedium
+        BtnL.Font = Enum.Font.Code
         BtnL.Text = "◄"
         BtnL.TextColor3 = T.Accent
-        BtnL.TextSize = 14
+        BtnL.TextSize = 11
         BtnL.ZIndex = 46
         BtnL.AutoButtonColor = false
         BtnL.Parent = TabBarContainer
@@ -630,10 +627,10 @@ function EugunewuLib:Create(cfg)
         BtnR.BorderSizePixel = 0
         BtnR.Size = UDim2.new(0, 24, 1, 0)
         BtnR.Position = UDim2.new(1, -24, 0, 0)
-        BtnR.Font = Enum.Font.GothamMedium
+        BtnR.Font = Enum.Font.Code
         BtnR.Text = "►"
         BtnR.TextColor3 = T.Accent
-        BtnR.TextSize = 14
+        BtnR.TextSize = 11
         BtnR.ZIndex = 46
         BtnR.AutoButtonColor = false
         BtnR.Parent = TabBarContainer
@@ -744,8 +741,8 @@ function EugunewuLib:Create(cfg)
         pd(TabBar, 8, 8, 6, 6)
 
         local sbLine = Instance.new("Frame")
-        sbLine.BackgroundColor3 = T.Border
-        sbLine.BackgroundTransparency = 0.2
+        sbLine.BackgroundColor3 = T.Accent
+        sbLine.BackgroundTransparency = 0.6
         sbLine.BorderSizePixel = 0
         sbLine.Size = UDim2.new(0, 1, 1, -(TH + 8))
         sbLine.Position = UDim2.new(0, tbW, 0, TH + 4)
@@ -783,10 +780,10 @@ function EugunewuLib:Create(cfg)
     BootText.BackgroundTransparency = 1
     BootText.Size = UDim2.new(1, -24, 1, -16)
     BootText.Position = UDim2.new(0, 12, 0, 8)
-    BootText.Font = Enum.Font.GothamMedium
+    BootText.Font = Enum.Font.Code
     BootText.Text = ""
     BootText.TextColor3 = T.Text
-    BootText.TextSize = mob and 12 or 14
+    BootText.TextSize = mob and 9 or 11
     BootText.TextXAlignment = Enum.TextXAlignment.Left
     BootText.TextYAlignment = Enum.TextYAlignment.Top
     BootText.TextWrapped = true
@@ -843,10 +840,10 @@ function EugunewuLib:Create(cfg)
         MobBtn.BackgroundColor3 = T.Bg
         MobBtn.Size = UDim2.new(0, 46, 0, 46)
         MobBtn.Position = UDim2.new(0, 8, 0.85, 0)
-        MobBtn.Font = Enum.Font.GothamMedium
+        MobBtn.Font = Enum.Font.Code
         MobBtn.Text = "[>_"
         MobBtn.TextColor3 = T.Accent
-        MobBtn.TextSize = 15
+        MobBtn.TextSize = 14
         MobBtn.ZIndex = 99999
         MobBtn.BorderSizePixel = 0
         MobBtn.AutoButtonColor = false
@@ -905,7 +902,7 @@ function EugunewuLib:Create(cfg)
     -- ═══════════ BOOT ANIMATION ═══════════
     task.spawn(function()
         local bootLines = {
-            '<font color="#' .. T.TextDim:ToHex() .. '">[BOOT]</font> EUGUNEWU://hub_v3.7 initializing...',
+            '<font color="#' .. T.TextDim:ToHex() .. '">[BOOT]</font> EUGUNEWU://hub_v3.4 initializing...',
             '<font color="#' .. T.TextDim:ToHex() .. '">[LOAD]</font> core_modules............. <font color="#' .. T.Success:ToHex() .. '">OK</font>',
             '<font color="#' .. T.TextDim:ToHex() .. '">[PROT]</font> anti_afk_engaged........ <font color="#' .. T.Success:ToHex() .. '">OK</font>',
             '<font color="#' .. T.TextDim:ToHex() .. '">[SCAN]</font> device: <font color="#' .. T.Accent:ToHex() .. '">' .. (mob and "MOBILE" or "DESKTOP") .. '</font>',
@@ -953,13 +950,13 @@ function EugunewuLib:Create(cfg)
 
         local nh = Instance.new("TextLabel")
         nh.BackgroundTransparency = 1; nh.Size = UDim2.new(1, 0, 0, 14)
-        nh.Font = Enum.Font.GothamMedium; nh.Text = (icons[nType] or "[i]") .. " " .. nTitle:upper()
-        nh.TextColor3 = nCol; nh.TextSize = 12; nh.TextXAlignment = Enum.TextXAlignment.Left
+        nh.Font = Enum.Font.Code; nh.Text = (icons[nType] or "[i]") .. " " .. nTitle:upper()
+        nh.TextColor3 = nCol; nh.TextSize = 10; nh.TextXAlignment = Enum.TextXAlignment.Left
         nh.ZIndex = 100000; nh.Parent = nf; glow(nh, nCol, 0.5)
 
         local nm = Instance.new("TextLabel")
         nm.BackgroundTransparency = 1; nm.Size = UDim2.new(1, 0, 0, 0); nm.AutomaticSize = Enum.AutomaticSize.Y
-        nm.Font = Enum.Font.GothamMedium; nm.Text = ":: " .. nMsg; nm.TextColor3 = T.TextDim; nm.TextSize = 12
+        nm.Font = Enum.Font.Code; nm.Text = ":: " .. nMsg; nm.TextColor3 = T.TextDim; nm.TextSize = 9
         nm.TextXAlignment = Enum.TextXAlignment.Left; nm.TextWrapped = true; nm.ZIndex = 100000; nm.Parent = nf
 
         local pbg = Instance.new("Frame")
@@ -997,17 +994,16 @@ function EugunewuLib:Create(cfg)
             TabBtn.BackgroundColor3 = T.Card
             TabBtn.BackgroundTransparency = 0.4
             TabBtn.Size = UDim2.new(0, TAB_W, 0, 24)
-            TabBtn.Font = Enum.Font.GothamMedium
+            TabBtn.Font = Enum.Font.Code
             TabBtn.Text = tabName:lower():sub(1, 10) .. "_"
             TabBtn.TextColor3 = T.TextDim  -- lebih visible dari TextDark
-            TabBtn.TextSize = 12
+            TabBtn.TextSize = 9
             TabBtn.TextXAlignment = Enum.TextXAlignment.Center
             TabBtn.BorderSizePixel = 0
             TabBtn.AutoButtonColor = false
             TabBtn.ZIndex = 43
             TabBtn.Parent = TabBar
             rc(TabBtn, 2)
-            TabBtn.TextStrokeTransparency = 1
 
             if lib._UpdateTabCanvas then
                 task.defer(lib._UpdateTabCanvas)
@@ -1016,17 +1012,16 @@ function EugunewuLib:Create(cfg)
             TabBtn = Instance.new("TextButton")
             TabBtn.BackgroundTransparency = 1
             TabBtn.Size = UDim2.new(1, 0, 0, 26)
-            TabBtn.Font = Enum.Font.GothamMedium
+            TabBtn.Font = Enum.Font.Code
             TabBtn.Text = "   " .. tabName:lower() .. "_"
             TabBtn.TextColor3 = T.TextDim  -- lebih visible
-            TabBtn.TextSize = 14
+            TabBtn.TextSize = 11
             TabBtn.TextXAlignment = Enum.TextXAlignment.Left
             TabBtn.BorderSizePixel = 0
             TabBtn.AutoButtonColor = false
             TabBtn.ZIndex = 41
             TabBtn.Parent = TabBar
             rc(TabBtn, 2)
-            TabBtn.TextStrokeTransparency = 1
         end
         tab.Button = TabBtn
 
@@ -1106,7 +1101,7 @@ function EugunewuLib:Create(cfg)
             f.BackgroundColor3 = T.Card
             f.BackgroundTransparency = 0.15  -- lebih visible
             f.BorderSizePixel = 0
-            f.Size = UDim2.new(1, 0, 0, h or 40)
+            f.Size = UDim2.new(1, 0, 0, h or 36)
             f.ZIndex = 10
             f.Parent = Page
             rc(f, 3); st(f, T.Border, 1, 0.5)
@@ -1118,9 +1113,9 @@ function EugunewuLib:Create(cfg)
             sf.BackgroundTransparency = 1; sf.Size = UDim2.new(1, 0, 0, 18); sf.ZIndex = 10; sf.Parent = Page
             local sl = Instance.new("TextLabel")
             sl.BackgroundTransparency = 1; sl.Size = UDim2.new(1, 0, 1, 0)
-            sl.Font = Enum.Font.GothamMedium; sl.Text = "── " .. (c4 and c4.Name or "SECTION"):upper() .. " " .. string.rep("─", 40)
+            sl.Font = Enum.Font.Code; sl.Text = "── " .. (c4 and c4.Name or "SECTION"):upper() .. " " .. string.rep("─", 40)
             sl.TextColor3 = T.Accent  -- section pakai Accent penuh, lebih terlihat
-            sl.TextSize = 12; sl.TextXAlignment = Enum.TextXAlignment.Left
+            sl.TextSize = 9; sl.TextXAlignment = Enum.TextXAlignment.Left
             sl.TextTruncate = Enum.TextTruncate.AtEnd; sl.ZIndex = 11; sl.Parent = sf
             glow(sl, T.AccentGlow, 0.7)
         end
@@ -1129,9 +1124,9 @@ function EugunewuLib:Create(cfg)
             local f = Cd(26)
             local l = Instance.new("TextLabel")
             l.BackgroundTransparency = 1; l.Size = UDim2.new(1, -16, 1, 0); l.Position = UDim2.new(0, 8, 0, 0)
-            l.Font = Enum.Font.GothamMedium; l.Text = "::.." .. (c4 and c4.Text or "label")
+            l.Font = Enum.Font.Code; l.Text = "::.." .. (c4 and c4.Text or "label")
             l.TextColor3 = T.Text  -- lebih terang dari TextDim
-            l.TextSize = 13; l.TextXAlignment = Enum.TextXAlignment.Left
+            l.TextSize = 10; l.TextXAlignment = Enum.TextXAlignment.Left
             l.ZIndex = 11; l.Parent = f; glow(l, T.AccentGlow, 0.8)
             return {Set = function(_, t) l.Text = ":: " .. t end}
         end
@@ -1142,14 +1137,14 @@ function EugunewuLib:Create(cfg)
             pd(f, 8, 8, 10, 10); ll(f, Enum.FillDirection.Vertical, 3)
             local tl = Instance.new("TextLabel")
             tl.BackgroundTransparency = 1; tl.Size = UDim2.new(1, 0, 0, 0); tl.AutomaticSize = Enum.AutomaticSize.Y
-            tl.Font = Enum.Font.GothamMedium; tl.Text = "╔═ " .. (c4.Title or ""):upper() .. " ═╗"
-            tl.TextColor3 = T.Accent; tl.TextSize = 14; tl.TextXAlignment = Enum.TextXAlignment.Left
+            tl.Font = Enum.Font.Code; tl.Text = "╔═ " .. (c4.Title or ""):upper() .. " ═╗"
+            tl.TextColor3 = T.Accent; tl.TextSize = 11; tl.TextXAlignment = Enum.TextXAlignment.Left
             tl.TextWrapped = true; tl.ZIndex = 11; tl.Parent = f; glow(tl, T.AccentGlow, 0.55)
             local cl = Instance.new("TextLabel")
             cl.BackgroundTransparency = 1; cl.Size = UDim2.new(1, 0, 0, 0); cl.AutomaticSize = Enum.AutomaticSize.Y
-            cl.Font = Enum.Font.GothamMedium; cl.Text = "║ " .. (c4.Content or ""):gsub("\n", "\n║ ")
+            cl.Font = Enum.Font.Code; cl.Text = "║ " .. (c4.Content or ""):gsub("\n", "\n║ ")
             cl.TextColor3 = T.Text  -- lebih terang
-            cl.TextSize = 12; cl.TextXAlignment = Enum.TextXAlignment.Left
+            cl.TextSize = 9; cl.TextXAlignment = Enum.TextXAlignment.Left
             cl.TextWrapped = true; cl.LineHeight = 1.3; cl.ZIndex = 11; cl.Parent = f
         end
 
@@ -1158,17 +1153,17 @@ function EugunewuLib:Create(cfg)
             local f = Cd(34); f.ClipsDescendants = true
             local px = Instance.new("TextLabel")
             px.BackgroundTransparency = 1; px.Size = UDim2.new(0, 14, 1, 0); px.Position = UDim2.new(0, 6, 0, 0)
-            px.Font = Enum.Font.GothamMedium; px.Text = ">"; px.TextColor3 = T.Accent; px.TextSize = 14
+            px.Font = Enum.Font.Code; px.Text = ">"; px.TextColor3 = T.Accent; px.TextSize = 12
             px.ZIndex = 11; px.Parent = f; glow(px, T.AccentGlow, 0.5)
             local bl = Instance.new("TextLabel")
             bl.BackgroundTransparency = 1; bl.Size = UDim2.new(1, -55, 1, 0); bl.Position = UDim2.new(0, 22, 0, 0)
-            bl.Font = Enum.Font.GothamMedium; bl.Text = (c4.Name or "cmd"):lower():gsub(" ", "_")
+            bl.Font = Enum.Font.Code; bl.Text = (c4.Name or "cmd"):lower():gsub(" ", "_")
             bl.TextColor3 = T.TextBright  -- lebih cerah
-            bl.TextSize = 14; bl.TextXAlignment = Enum.TextXAlignment.Left
+            bl.TextSize = 11; bl.TextXAlignment = Enum.TextXAlignment.Left
             bl.ZIndex = 11; bl.Parent = f; glow(bl, T.AccentGlow, 0.75)
             local ar = Instance.new("TextLabel")
             ar.BackgroundTransparency = 1; ar.Size = UDim2.new(0, 22, 1, 0); ar.Position = UDim2.new(1, -26, 0, 0)
-            ar.Font = Enum.Font.GothamMedium; ar.Text = "[→]"; ar.TextColor3 = T.TextDim; ar.TextSize = 12
+            ar.Font = Enum.Font.Code; ar.Text = "[→]"; ar.TextColor3 = T.TextDim; ar.TextSize = 9
             ar.ZIndex = 11; ar.Parent = f
             local btn = Instance.new("TextButton")
             btn.BackgroundTransparency = 1; btn.Size = UDim2.new(1, 0, 1, 0); btn.Text = ""
@@ -1192,14 +1187,14 @@ function EugunewuLib:Create(cfg)
             local f = Cd(34)
             local bl = Instance.new("TextLabel")
             bl.BackgroundTransparency = 1; bl.Size = UDim2.new(1, -85, 1, 0); bl.Position = UDim2.new(0, 8, 0, 0)
-            bl.Font = Enum.Font.GothamMedium; bl.Text = name:lower():gsub(" ", "_")
+            bl.Font = Enum.Font.Code; bl.Text = name:lower():gsub(" ", "_")
             bl.TextColor3 = T.TextBright
-            bl.TextSize = 14; bl.TextXAlignment = Enum.TextXAlignment.Left
+            bl.TextSize = 11; bl.TextXAlignment = Enum.TextXAlignment.Left
             bl.ZIndex = 11; bl.Parent = f; glow(bl, T.AccentGlow, 0.75)
             local tLbl = Instance.new("TextLabel")
             tLbl.BackgroundColor3 = T.Card; tLbl.BackgroundTransparency = 0.2
             tLbl.Size = UDim2.new(0, 62, 0, 20); tLbl.Position = UDim2.new(1, -70, 0.5, -10)
-            tLbl.Font = Enum.Font.GothamMedium; tLbl.TextSize = 13; tLbl.ZIndex = 12; tLbl.Parent = f; rc(tLbl, 2)
+            tLbl.Font = Enum.Font.Code; tLbl.TextSize = 10; tLbl.ZIndex = 12; tLbl.Parent = f; rc(tLbl, 2)
             local tStr = st(tLbl, T.Border, 1, 0.4)
             local function Upd()
                 if toggled then
@@ -1236,15 +1231,15 @@ function EugunewuLib:Create(cfg)
             local f = Cd(48)
             local nl2 = Instance.new("TextLabel")
             nl2.BackgroundTransparency = 1; nl2.Size = UDim2.new(0.55, 0, 0, 16); nl2.Position = UDim2.new(0, 8, 0, 3)
-            nl2.Font = Enum.Font.GothamMedium; nl2.Text = name:lower():gsub(" ", "_")
+            nl2.Font = Enum.Font.Code; nl2.Text = name:lower():gsub(" ", "_")
             nl2.TextColor3 = T.TextBright
-            nl2.TextSize = 13; nl2.TextXAlignment = Enum.TextXAlignment.Left
+            nl2.TextSize = 10; nl2.TextXAlignment = Enum.TextXAlignment.Left
             nl2.ZIndex = 11; nl2.Parent = f; glow(nl2, T.AccentGlow, 0.75)
             local vl = Instance.new("TextLabel")
             vl.BackgroundColor3 = T.Card; vl.BackgroundTransparency = 0.1
             vl.Size = UDim2.new(0, 52, 0, 16); vl.Position = UDim2.new(1, -60, 0, 3)
-            vl.Font = Enum.Font.GothamMedium; vl.Text = "[" .. tostring(val) .. suf .. "]"
-            vl.TextColor3 = T.Accent; vl.TextSize = 12; vl.ZIndex = 12; vl.Parent = f
+            vl.Font = Enum.Font.Code; vl.Text = "[" .. tostring(val) .. suf .. "]"
+            vl.TextColor3 = T.Accent; vl.TextSize = 9; vl.ZIndex = 12; vl.Parent = f
             rc(vl, 2); st(vl, T.Accent, 1, 0.4); glow(vl, T.AccentGlow, 0.55)
             local bg = Instance.new("Frame")
             bg.BackgroundColor3 = T.Border; bg.BorderSizePixel = 0
@@ -1306,15 +1301,15 @@ function EugunewuLib:Create(cfg)
             end
             local nl2 = Instance.new("TextLabel")
             nl2.BackgroundTransparency = 1; nl2.Size = UDim2.new(0.35, 0, 0, 34); nl2.Position = UDim2.new(0, 8, 0, 0)
-            nl2.Font = Enum.Font.GothamMedium; nl2.Text = name:lower():gsub(" ", "_"); nl2.TextColor3 = T.TextBright; nl2.TextSize = 13
+            nl2.Font = Enum.Font.Code; nl2.Text = name:lower():gsub(" ", "_"); nl2.TextColor3 = T.TextBright; nl2.TextSize = 10
             nl2.TextXAlignment = Enum.TextXAlignment.Left; nl2.ZIndex = 11; nl2.Parent = f; glow(nl2, T.AccentGlow, 0.75)
             local sl = Instance.new("TextLabel")
             sl.BackgroundTransparency = 1; sl.Size = UDim2.new(0.55, -10, 0, 34); sl.Position = UDim2.new(0.35, 0, 0, 0)
-            sl.Font = Enum.Font.GothamMedium; sl.Text = "[" .. GT() .. "]"; sl.TextColor3 = T.Accent; sl.TextSize = 12
+            sl.Font = Enum.Font.Code; sl.Text = "[" .. GT() .. "]"; sl.TextColor3 = T.Accent; sl.TextSize = 9
             sl.TextXAlignment = Enum.TextXAlignment.Right; sl.TextTruncate = Enum.TextTruncate.AtEnd; sl.ZIndex = 11; sl.Parent = f; glow(sl, T.AccentGlow, 0.6)
             local arw = Instance.new("TextLabel")
             arw.BackgroundTransparency = 1; arw.Size = UDim2.new(0, 16, 0, 34); arw.Position = UDim2.new(1, -20, 0, 0)
-            arw.Font = Enum.Font.GothamMedium; arw.Text = "▾"; arw.TextColor3 = T.TextDim; arw.TextSize = 14; arw.ZIndex = 11; arw.Parent = f
+            arw.Font = Enum.Font.Code; arw.Text = "▾"; arw.TextColor3 = T.TextDim; arw.TextSize = 11; arw.ZIndex = 11; arw.Parent = f
             local oc = Instance.new("Frame")
             oc.BackgroundTransparency = 1; oc.Size = UDim2.new(1, -14, 0, 0); oc.Position = UDim2.new(0, 7, 0, 36)
             oc.ClipsDescendants = true; oc.ZIndex = 11; oc.Parent = f; ll(oc, Enum.FillDirection.Vertical, 2)
@@ -1324,7 +1319,7 @@ function EugunewuLib:Create(cfg)
                 for _, opt in ipairs(opts) do
                     local ob = Instance.new("TextButton")
                     ob.BackgroundColor3 = T.Surface; ob.BackgroundTransparency = 0.2; ob.Size = UDim2.new(1, 0, 0, 22)
-                    ob.Font = Enum.Font.GothamMedium; ob.Text = "  " .. opt:lower(); ob.TextColor3 = T.Text; ob.TextSize = 13
+                    ob.Font = Enum.Font.Code; ob.Text = "  " .. opt:lower(); ob.TextColor3 = T.Text; ob.TextSize = 10
                     ob.TextXAlignment = Enum.TextXAlignment.Left; ob.BorderSizePixel = 0; ob.AutoButtonColor = false
                     ob.ZIndex = 12; ob.Parent = oc; rc(ob, 2); ob.Name = opt:lower()
                     local is = multi and sel[opt] or (sel == opt)
@@ -1375,7 +1370,7 @@ function EugunewuLib:Create(cfg)
             local f = Cd(34)
             local nl2 = Instance.new("TextLabel")
             nl2.BackgroundTransparency = 1; nl2.Size = UDim2.new(0.32, 0, 1, 0); nl2.Position = UDim2.new(0, 8, 0, 0)
-            nl2.Font = Enum.Font.GothamMedium; nl2.Text = "$ " .. name:lower():gsub(" ", "_"); nl2.TextColor3 = T.TextBright; nl2.TextSize = 13
+            nl2.Font = Enum.Font.Code; nl2.Text = "$ " .. name:lower():gsub(" ", "_"); nl2.TextColor3 = T.TextBright; nl2.TextSize = 10
             nl2.TextXAlignment = Enum.TextXAlignment.Left; nl2.ZIndex = 11; nl2.Parent = f; glow(nl2, T.AccentGlow, 0.75)
             local ibg = Instance.new("Frame")
             ibg.BackgroundColor3 = T.Bg; ibg.BorderSizePixel = 0; ibg.Size = UDim2.new(0.62, 0, 0, 22); ibg.Position = UDim2.new(0.36, 0, 0.5, -11)
@@ -1383,8 +1378,8 @@ function EugunewuLib:Create(cfg)
             local iStr = st(ibg, T.Border, 1, 0.4)
             local tb = Instance.new("TextBox")
             tb.BackgroundTransparency = 1; tb.Size = UDim2.new(1, -8, 1, 0); tb.Position = UDim2.new(0, 4, 0, 0)
-            tb.Font = Enum.Font.GothamMedium; tb.Text = def; tb.PlaceholderText = c4.Placeholder or "type_here..."
-            tb.PlaceholderColor3 = T.TextDim; tb.TextColor3 = T.Accent; tb.TextSize = 13
+            tb.Font = Enum.Font.Code; tb.Text = def; tb.PlaceholderText = c4.Placeholder or "type_here..."
+            tb.PlaceholderColor3 = T.TextDim; tb.TextColor3 = T.Accent; tb.TextSize = 10
             tb.TextXAlignment = Enum.TextXAlignment.Left; tb.ClearTextOnFocus = false; tb.ZIndex = 12; tb.Parent = ibg
             glow(tb, T.AccentGlow, 0.6)
             tb.Focused:Connect(function() tw(iStr, {Color = T.Accent, Transparency = 0.1}, 0.12) end)
@@ -1400,11 +1395,11 @@ function EugunewuLib:Create(cfg)
             local f = Cd(34)
             local nl2 = Instance.new("TextLabel")
             nl2.BackgroundTransparency = 1; nl2.Size = UDim2.new(0.6, 0, 1, 0); nl2.Position = UDim2.new(0, 8, 0, 0)
-            nl2.Font = Enum.Font.GothamMedium; nl2.Text = name:lower():gsub(" ", "_"); nl2.TextColor3 = T.TextBright; nl2.TextSize = 13
+            nl2.Font = Enum.Font.Code; nl2.Text = name:lower():gsub(" ", "_"); nl2.TextColor3 = T.TextBright; nl2.TextSize = 10
             nl2.TextXAlignment = Enum.TextXAlignment.Left; nl2.ZIndex = 11; nl2.Parent = f; glow(nl2, T.AccentGlow, 0.75)
             local kb = Instance.new("TextButton")
             kb.BackgroundColor3 = T.Bg; kb.Size = UDim2.new(0, 60, 0, 20); kb.Position = UDim2.new(1, -68, 0.5, -10)
-            kb.Font = Enum.Font.GothamMedium; kb.Text = "[" .. (key.Name or "?") .. "]"; kb.TextColor3 = T.Accent; kb.TextSize = 12
+            kb.Font = Enum.Font.Code; kb.Text = "[" .. (key.Name or "?") .. "]"; kb.TextColor3 = T.Accent; kb.TextSize = 9
             kb.BorderSizePixel = 0; kb.AutoButtonColor = false; kb.ZIndex = 12; kb.Parent = f; rc(kb, 2)
             local kStr = st(kb, T.Border, 1, 0.4); glow(kb, T.AccentGlow, 0.55)
             kb.MouseButton1Click:Connect(function() listening = true; kb.Text = "[···]"; tw(kStr, {Color = T.Accent, Transparency = 0.1}, 0.12) end)
@@ -1424,7 +1419,7 @@ function EugunewuLib:Create(cfg)
             local f = Cd(34); f.ClipsDescendants = true
             local nl2 = Instance.new("TextLabel")
             nl2.BackgroundTransparency = 1; nl2.Size = UDim2.new(1, -50, 0, 34); nl2.Position = UDim2.new(0, 8, 0, 0)
-            nl2.Font = Enum.Font.GothamMedium; nl2.Text = name:lower():gsub(" ", "_"); nl2.TextColor3 = T.TextBright; nl2.TextSize = 13
+            nl2.Font = Enum.Font.Code; nl2.Text = name:lower():gsub(" ", "_"); nl2.TextColor3 = T.TextBright; nl2.TextSize = 10
             nl2.TextXAlignment = Enum.TextXAlignment.Left; nl2.ZIndex = 11; nl2.Parent = f; glow(nl2, T.AccentGlow, 0.75)
             local cpv = Instance.new("Frame")
             cpv.BackgroundColor3 = col; cpv.Size = UDim2.new(0, 22, 0, 16); cpv.Position = UDim2.new(1, -30, 0.5, -8)
@@ -1482,7 +1477,7 @@ function EugunewuLib:Create(cfg)
     function lib:Destroy() _afk = false; SG:Destroy() end
 
     task.delay(2.0, function()
-        lib:Notify({Title = "SYSTEM READY", Message = "EUGUNEWU HUB v3.7. Anti-AFK: ACTIVE", Type = "Success", Duration = 3})
+        lib:Notify({Title = "SYSTEM READY", Message = "EUGUNEWU HUB v3.4. Anti-AFK: ACTIVE", Type = "Success", Duration = 3})
     end)
 
     return lib
