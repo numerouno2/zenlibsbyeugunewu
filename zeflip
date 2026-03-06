@@ -4,7 +4,7 @@
     ║  █▄▄   █  █ █ ▄▄ █  █ █ █ █▄▄   █ █ █ █  █ ║
     ║  ██▄▄▄ ▀▄▄▀ ▀▄▄▀ ▀▄▄▀ █ █ ██▄▄▄ ▀▄▀▄▀ ▀▄▄▀ ║
     ║                                               ║
-    ║  EUGUNEWU://HUB_v3.6 [TERMINAL_EDITION]      ║
+    ║  EUGUNEWU://HUB_v3.7 [TERMINAL_EDITION]      ║
     ║  Retro CRT • Eye-Friendly • Mobile Ready      ║
     ║  Anti-AFK Protocol: ALWAYS_ACTIVE              ║
     ╚═══════════════════════════════════════════════╝
@@ -397,7 +397,7 @@ function EugunewuLib:Create(cfg)
     Main.ZIndex = 1
     Main.Parent = SG
     rc(Main, 3)
-    local mainStroke = st(Main, T.Accent, 1.5, 0.25)  -- lebih visible
+    local mainStroke = st(Main, T.Border, 1, 0.2)  -- border subtle, tidak glowy
     lib.Main = Main
 
     -- ═══════════ SCANLINES ═══════════
@@ -495,7 +495,7 @@ function EugunewuLib:Create(cfg)
     TitleLbl.Size = UDim2.new(0.5, -50, 1, 0)
     TitleLbl.Position = UDim2.new(0, 50, 0, 0)
     TitleLbl.Font = Enum.Font.GothamMedium
-    TitleLbl.Text = lib.Name:upper() .. "://v3.6"
+    TitleLbl.Text = lib.Name:upper() .. "://v3.7"
     TitleLbl.TextColor3 = T.TextBright  -- lebih cerah dari v3.2
     TitleLbl.TextSize = mob and 13 or 15
     TitleLbl.TextXAlignment = Enum.TextXAlignment.Left
@@ -744,8 +744,8 @@ function EugunewuLib:Create(cfg)
         pd(TabBar, 8, 8, 6, 6)
 
         local sbLine = Instance.new("Frame")
-        sbLine.BackgroundColor3 = T.Accent
-        sbLine.BackgroundTransparency = 0.6
+        sbLine.BackgroundColor3 = T.Border
+        sbLine.BackgroundTransparency = 0.2
         sbLine.BorderSizePixel = 0
         sbLine.Size = UDim2.new(0, 1, 1, -(TH + 8))
         sbLine.Position = UDim2.new(0, tbW, 0, TH + 4)
@@ -905,7 +905,7 @@ function EugunewuLib:Create(cfg)
     -- ═══════════ BOOT ANIMATION ═══════════
     task.spawn(function()
         local bootLines = {
-            '<font color="#' .. T.TextDim:ToHex() .. '">[BOOT]</font> EUGUNEWU://hub_v3.6 initializing...',
+            '<font color="#' .. T.TextDim:ToHex() .. '">[BOOT]</font> EUGUNEWU://hub_v3.7 initializing...',
             '<font color="#' .. T.TextDim:ToHex() .. '">[LOAD]</font> core_modules............. <font color="#' .. T.Success:ToHex() .. '">OK</font>',
             '<font color="#' .. T.TextDim:ToHex() .. '">[PROT]</font> anti_afk_engaged........ <font color="#' .. T.Success:ToHex() .. '">OK</font>',
             '<font color="#' .. T.TextDim:ToHex() .. '">[SCAN]</font> device: <font color="#' .. T.Accent:ToHex() .. '">' .. (mob and "MOBILE" or "DESKTOP") .. '</font>',
@@ -1007,6 +1007,7 @@ function EugunewuLib:Create(cfg)
             TabBtn.ZIndex = 43
             TabBtn.Parent = TabBar
             rc(TabBtn, 2)
+            TabBtn.TextStrokeTransparency = 1
 
             if lib._UpdateTabCanvas then
                 task.defer(lib._UpdateTabCanvas)
@@ -1025,6 +1026,7 @@ function EugunewuLib:Create(cfg)
             TabBtn.ZIndex = 41
             TabBtn.Parent = TabBar
             rc(TabBtn, 2)
+            TabBtn.TextStrokeTransparency = 1
         end
         tab.Button = TabBtn
 
@@ -1480,7 +1482,7 @@ function EugunewuLib:Create(cfg)
     function lib:Destroy() _afk = false; SG:Destroy() end
 
     task.delay(2.0, function()
-        lib:Notify({Title = "SYSTEM READY", Message = "EUGUNEWU HUB v3.6. Anti-AFK: ACTIVE", Type = "Success", Duration = 3})
+        lib:Notify({Title = "SYSTEM READY", Message = "EUGUNEWU HUB v3.7. Anti-AFK: ACTIVE", Type = "Success", Duration = 3})
     end)
 
     return lib
