@@ -339,7 +339,7 @@ function EugunewuLib:Create(cfg)
     cfg = cfg or {}
     local lib = setmetatable({}, EugunewuLib)
     lib.Name = cfg.Name or "EUGUNEWU HUB"
-    lib.T = Themes[cfg.Theme or "Void"] or Themes.Void
+    lib.T = Themes[cfg.Theme or "Arctic"] or Themes.Void
     lib.Tabs = {}
     lib.Flags = {}
     lib.Toggled = true
